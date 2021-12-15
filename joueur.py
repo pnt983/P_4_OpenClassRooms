@@ -1,17 +1,52 @@
 import tournoi
 import vue_joueurs
+import controller_joueurs
 from operator import itemgetter
 
 
 class Joueur:
     """Enregistrer les nouveaux joueurs ou charger ceux enregistrés dans la base de donnees"""
 
-    def __init__(self):
-        self.nom = vue_joueurs.nom()
-        self.prenom = vue_joueurs.prenom()
-        self.date_de_naissance = vue_joueurs.date_de_naissance()
-        self.sexe = vue_joueurs.sexe()
-        self.classement = vue_joueurs.classement()
+    def __init__(self, nom, prenom, date_naissance, sexe, classement):
+        self.nom = nom
+        self.prenom = prenom
+        self.date_de_naissance = date_naissance
+        self.sexe_joueur = sexe
+        self.classement_joueur = classement
+
+    def sexe(self, choix_input) -> str:
+        while True:    # Probleme de boucle infini puisque j'ai plus le input
+            choix = choix_input
+            longueur = choix.__len__()
+            if longueur > 0 and longueur < 2:
+                if choix == "M" or choix == "F":
+                    return choix
+                else:
+                    print("Seulement F ou M.")
+            else:
+                print("Seulement un seul caractere.")
+
+    def classement(self, choix_classement) -> int:
+        while True:   # Probleme de boucle infini puisque j'ai plus le input
+            choix = choix_classement
+            if choix >= 0:
+                return choix
+            else:
+                print("Le classement d'un joueur ne peut pas etre negatif.")
+
+    def enregistrer_nouveau_joueur(self):
+        nouveau_joueur = controller_joueurs.ControllerJoueur.creer_joueur(controller_joueurs.ControllerJoueur)
+        serialise = {
+            "nom": nouveau_joueur.nom,
+            "prenom": nouveau_joueur.prenom,
+            "naissance": nouveau_joueur.date_de_naissance,
+            "sexe": nouveau_joueur.sexe_joueur,
+            "classement": nouveau_joueur.classement_joueur
+        }
+        tournoi.table_joueur.upsert(serialise,
+                                    tournoi.user.nom == nouveau_joueur.nom and tournoi.user.prenom == nouveau_joueur.prenom)
+        id_joueur = tournoi.table_joueur.get(tournoi.user.nom == nouveau_joueur.nom and tournoi.user.prenom == nouveau_joueur.nom)
+        return id_joueur.doc_id
 
     def entrer_joueur(self, nom_tournoi, lieu_tournoi):   # Peut-etre a mettre dans Tournoi ou dans Controller
         """ Enregistre un nouveau joueur ou recupere dans la base de donnees"""
@@ -37,20 +72,6 @@ choisir dans la base de donnees: "))
                     print("Le choix est incorrecte")
             except ValueError:
                 print("Le choix n'est pas valide, veuillez reesayer")
-
-    def ajouter_joueur_db(self) -> list:
-        """ Serialise le joueur et l'ajoute a la base de donnees 'Joueur' """
-        serialise_joueur = {
-            "nom": self.nom,
-            "prenom": self.prenom,
-            "naissance": self.date_de_naissance,
-            "sexe": self.sexe,
-            "classement": self.classement
-        }
-        tournoi.table_joueur.upsert(serialise_joueur,
-                                    tournoi.user.nom == self.nom and tournoi.user.prenom == self.prenom)
-        id_joueur = tournoi.table_joueur.get(tournoi.user.nom == self.nom and tournoi.user.prenom == self.prenom)
-        return id_joueur.doc_id
 
     def ajouter_joueur_du_tournoi_a_db(self, nom_tournoi, lieu_tournoi, joueur_recuperer):
         """Ajoute le joueur a la table 'table_joueur_par_tournoi' de la db"""
@@ -143,7 +164,7 @@ choisir dans la base de donnees: "))
 
 
 def main():
-    Joueur.indice_joueur(Joueur)
+    pass
 
 
 if __name__ == "__main__":
