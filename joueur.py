@@ -48,31 +48,6 @@ class Joueur:
         id_joueur = tournoi.table_joueur.get(tournoi.user.nom == nouveau_joueur.nom and tournoi.user.prenom == nouveau_joueur.nom)
         return id_joueur.doc_id
 
-    def entrer_joueur(self, nom_tournoi, lieu_tournoi):   # Peut-etre a mettre dans Tournoi ou dans Controller
-        """ Enregistre un nouveau joueur ou recupere dans la base de donnees"""
-        while True:
-            choix = {1: "Creer nouveau joueur", 2: "Choisir joueur dans la base de donnee"}
-            try:
-                choix_utilisateur = int(input("Entrer 1 pour creer un joueur ou 2 pour \
-choisir dans la base de donnees: "))
-                if choix_utilisateur in choix:
-                    if choix_utilisateur == 1:
-                        creer_joueur = Joueur()
-                        ajouter_a_db_joueur = creer_joueur.ajouter_joueur_db()
-                        chercher_id = tournoi.table_joueur.get(doc_id=ajouter_a_db_joueur)
-                        Joueur.ajouter_joueur_du_tournoi_a_db(Joueur, nom_tournoi, lieu_tournoi, chercher_id)
-                        return ajouter_a_db_joueur
-                    elif choix_utilisateur == 2:
-                        joueur_recuperer = Joueur.recuperer_joueur_db(Joueur)
-                        Joueur.ajouter_joueur_du_tournoi_a_db(Joueur, nom_tournoi, lieu_tournoi, joueur_recuperer)
-                        return joueur_recuperer
-                    else:
-                        print("Votre choix ne fait pas partie des options possibles.")
-                else:
-                    print("Le choix est incorrecte")
-            except ValueError:
-                print("Le choix n'est pas valide, veuillez reesayer")
-
     def ajouter_joueur_du_tournoi_a_db(self, nom_tournoi, lieu_tournoi, joueur_recuperer):
         """Ajoute le joueur a la table 'table_joueur_par_tournoi' de la db"""
         info_joueur = joueur_recuperer
@@ -103,30 +78,14 @@ choisir dans la base de donnees: "))
             except ValueError:
                 print("Seulement les chiffres et les nombres sont acceptés")
 
-    def recuperer_joueur_db(self):
-        """ Recupere le joueur dans la base de donnees soit par 'nom et prenom' soit par 'id' """
-        while True:
-            choix_utilisateur = vue_joueurs.choix_utilisateur()
-            if choix_utilisateur == 1:
-                choix_nom = vue_joueurs.choix_par_nom()
-                choix_prenom = vue_joueurs.choix_par_prenom()
-                chercher_nom = tournoi.table_joueur.search(
-                    (tournoi.user.nom == choix_nom) & (tournoi.user.prenom == choix_prenom))
-                if chercher_nom != []:
-                    print(chercher_nom)
-                    return chercher_nom
-                else:
-                    print("Le joueur n'est pas enregistrer dans la DB")
-            elif choix_utilisateur == 2:
-                choix = vue_joueurs.choix_par_id()
-                chercher_id = tournoi.table_joueur.get(doc_id=choix)
-                if chercher_id != []:
-                    print(chercher_id)
-                    return chercher_id
-                else:
-                    print("Le joueur n'est pas enregistrer dans la DB")
-            else:
-                print("La recherche ne fait pas partie de la base de donnee")
+    def recuperer_joueur_db(self, choix):
+        """ Recupere le joueur dans la base de donnees par son 'id' """
+        chercher_id = tournoi.table_joueur.get(doc_id=choix)
+        if chercher_id != []:
+            print(chercher_id)
+            return chercher_id
+        else:
+            print("Le joueur n'est pas enregistrer dans la DB")
 
     def classer_par_classement(self, table_db):
         """Pour que dans le rapport, les joueurs soient classés par ordre de classement"""
