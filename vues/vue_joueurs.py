@@ -1,4 +1,4 @@
-import tournoi
+from models import tournoi
 
 
 class VueJoueur:

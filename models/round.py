@@ -1,6 +1,6 @@
-import tournoi
-import joueur
-from vue_round import CreationRound
+from . import tournoi
+from . import joueur
+from vues.vue_round import CreationRound
 import time
 from itertools import islice, repeat
 from operator import itemgetter

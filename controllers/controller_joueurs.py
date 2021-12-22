@@ -1,5 +1,5 @@
-import vue_joueurs
-import joueur
+from vues import vue_joueurs
+from models import joueur
 from tinydb import TinyDB, Query
 
 db = TinyDB("db.json")

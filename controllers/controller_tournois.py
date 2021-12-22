@@ -1,5 +1,5 @@
-import tournoi
-from vue_tournoi import VueTournoi
+from models import tournoi
+from vues.vue_tournoi import VueTournoi
 
 
 class ControleurTour:

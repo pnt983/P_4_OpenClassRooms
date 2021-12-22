@@ -1,7 +1,7 @@
-import joueur
-from vue_tournoi import VueTournoi
-import controller_tournois
-import controller
+from . import joueur
+from vues.vue_tournoi import VueTournoi
+from controllers.controller_tournois import ControleurTour
+import controllers.controller as controller
 from tinydb import TinyDB, Query
 import time
 

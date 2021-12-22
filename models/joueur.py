@@ -1,6 +1,6 @@
-import tournoi
-import vue_joueurs
-import controller_joueurs
+from . import tournoi
+import vues.vue_joueurs as vue_joueurs
+import controllers.controller_joueurs as controller_joueurs
 from operator import itemgetter
 
 
