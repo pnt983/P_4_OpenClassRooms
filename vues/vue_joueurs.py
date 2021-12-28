@@ -21,15 +21,12 @@ class VueJoueur:
         }
         return dictionnaire
 
+    def choix_ajouter_joueur(self):
+        return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
+
     def choix_utilisateur(self):
         return int(input("Taper 1 pour chercher par nom et prenom. Ou 2 \
     pour choisir par id: "))
-
-    def choix_par_nom(self):
-        return input("Entrer le nom du joueur: ").capitalize()
-
-    def choix_par_prenom(self):
-        return input("Entrer le prenom du joueur: ").capitalize()
 
     def choix_par_id(self):
         for row in tournoi.table_joueur:

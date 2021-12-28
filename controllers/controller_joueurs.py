@@ -13,40 +13,36 @@ table_rounds_par_tournoi = db.table("Rounds")
 class ControllerJoueur:
 
     def __init__(self):
-        self.vue_joueur = vue_joueurs.VueJoueur()
+        pass
 
     def creer_joueur(self):
-        infos = self.vue_joueur.creer_infos_joueur()
+        """ Cree un joueur et l'ajoute a la db 'table_joueur' """
+        infos = vue_joueurs.VueJoueur.creer_infos_joueur(vue_joueurs.VueJoueur)
         self.joueur = joueur.Joueur(infos.get("nom"), infos.get("prenom"), infos.get("date_naissance"),
                                     joueur.Joueur.sexe(joueur.Joueur, infos.get("sexe")),
                                     joueur.Joueur.classement(joueur.Joueur, infos.get("classement")))
-        serialise = {
-            "nom": self.joueur.nom,
-            "prenom": self.joueur.prenom,
-            "naissance": self.joueur.date_de_naissance,
-            "sexe": self.joueur.sexe_joueur,
-            "classement": self.joueur.classement_joueur
-        }
+        serialise = self.joueur.serialise_joueur(self.joueur)
         table_joueur.upsert(serialise,
                             user.nom == self.joueur.nom and user.prenom == self.joueur.prenom)
         return serialise
 
-    def entrer_joueur(self, nom_tournoi, lieu_tournoi):
-        """ Enregistre un nouveau joueur ou recupere dans la base de donnees"""
+    def ajouter_joueur_au_tournoi(self, nom_tournoi, lieu_tournoi):
+        """ Enregistre un nouveau joueur ou recupere dans la base de donnees pour l'ajouter au tournoi"""
         while True:
             choix = {1: "Creer nouveau joueur", 2: "Choisir joueur dans la base de donnee"}
             try:
-                choix_utilisateur = int(input("Entrer 1 pour creer un joueur ou 2 pour \
-choisir dans la base de donnees: "))
+                choix_utilisateur = vue_joueurs.VueJoueur.choix_ajouter_joueur(vue_joueurs.VueJoueur)
                 if choix_utilisateur in choix:
                     if choix_utilisateur == 1:
-                        creer_joueur = self.creer_joueur()
-                        joueur.Joueur.ajouter_joueur_du_tournoi_a_db(joueur.Joueur, nom_tournoi, lieu_tournoi, creer_joueur)
+                        creer_joueur = self.creer_joueur(ControllerJoueur)
+                        joueur.Joueur.ajouter_joueur_du_tournoi_a_db(joueur.Joueur, nom_tournoi,
+                                                                     lieu_tournoi, creer_joueur)
                         return creer_joueur
                     elif choix_utilisateur == 2:
                         choix = vue_joueurs.VueJoueur.choix_par_id(vue_joueurs.VueJoueur)
                         joueur_recuperer = joueur.Joueur.recuperer_joueur_db(joueur.Joueur, choix)
-                        joueur.Joueur.ajouter_joueur_du_tournoi_a_db(joueur.Joueur, nom_tournoi, lieu_tournoi, joueur_recuperer)
+                        joueur.Joueur.ajouter_joueur_du_tournoi_a_db(joueur.Joueur, nom_tournoi,
+                                                                     lieu_tournoi, joueur_recuperer)
                         return joueur_recuperer
                     else:
                         print("Votre choix ne fait pas partie des options possibles.")
@@ -58,7 +54,7 @@ choisir dans la base de donnees: "))
 
 def main():
     test = ControllerJoueur()
-    resultat = test.entrer_joueur("test", "test2")
+    resultat = test.creer_joueur()
     print(resultat)
     print(type(resultat))
 

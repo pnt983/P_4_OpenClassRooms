@@ -34,15 +34,20 @@ class Joueur:
             else:
                 print("Le classement d'un joueur ne peut pas etre negatif.")
 
-    def enregistrer_nouveau_joueur(self):
-        nouveau_joueur = controller_joueurs.ControllerJoueur.creer_joueur(controller_joueurs.ControllerJoueur)
+    def serialise_joueur(self, joueur):
+        joueur_info = joueur
         serialise = {
-            "nom": nouveau_joueur.nom,
-            "prenom": nouveau_joueur.prenom,
-            "naissance": nouveau_joueur.date_de_naissance,
-            "sexe": nouveau_joueur.sexe_joueur,
-            "classement": nouveau_joueur.classement_joueur
+            "nom": joueur_info.nom,
+            "prenom": joueur_info.prenom,
+            "naissance": joueur_info.date_de_naissance,
+            "sexe": joueur_info.sexe_joueur,
+            "classement": joueur_info.classement_joueur
         }
+        return serialise
+
+    def enregistrer_nouveau_joueur(self):  # A supprimer surement,fais doublon avec 'creer_joueur' du 'controller_joueur'
+        nouveau_joueur = controller_joueurs.ControllerJoueur.creer_joueur(controller_joueurs.ControllerJoueur)
+        serialise = self.serialise_joueur(nouveau_joueur)
         tournoi.table_joueur.upsert(serialise,
                                     tournoi.user.nom == nouveau_joueur.nom and tournoi.user.prenom == nouveau_joueur.prenom)
         id_joueur = tournoi.table_joueur.get(tournoi.user.nom == nouveau_joueur.nom and tournoi.user.prenom == nouveau_joueur.nom)
@@ -67,10 +72,10 @@ class Joueur:
         """L'utilisateur peut modifier le classement d'un joueur par son ID"""
         while True:
             try:
-                joueur_a_modifier = vue_joueurs.modifier_classement()
+                joueur_a_modifier = vue_joueurs.VueJoueur.modifier_classement()
                 joueur_trouve = tournoi.table_joueur.get(doc_id=joueur_a_modifier)
                 if joueur_trouve is not None:
-                    nouveau_classement = vue_joueurs.nouveau_classement()
+                    nouveau_classement = vue_joueurs.VueJoueur.nouveau_classement()
                     tournoi.table_joueur.update({"classement": nouveau_classement}, doc_ids=[joueur_a_modifier])
                     return joueur_trouve
                 else:
@@ -87,7 +92,7 @@ class Joueur:
         else:
             print("Le joueur n'est pas enregistrer dans la DB")
 
-    def classer_par_classement(self, table_db):
+    def classer_par_classement(self, table_db):  # Peut-etre a mettre dans 'raport', peut-etre utile pour 'round'
         """Pour que dans le rapport, les joueurs soient classés par ordre de classement"""
         liste_joueur = []
         for row in table_db:
@@ -102,7 +107,7 @@ class Joueur:
         liste_par_classement = sorted(liste_joueur, key=itemgetter(4), reverse=True)
         return liste_par_classement
 
-    def classer_par_ordre_alphabetique(self, table_db):
+    def classer_par_ordre_alphabetique(self, table_db):  # Peut-etre a mettre dans 'raport', peut-etre utile pour 'round'
         """Pour que dans le rapport, les joueurs soient classés par ordre alphabetique"""
         liste_joueur = []
         for row in table_db:
@@ -116,10 +121,6 @@ class Joueur:
             liste_joueur.append(deserialise_joueur)
         liste_par_ordre_alphabetique = sorted(liste_joueur, key=itemgetter(0))
         return liste_par_ordre_alphabetique
-
-    def indice_joueur(self):
-        """ Montre l'id du joueur"""
-        vue_joueurs.indice_joueur()
 
 
 def main():

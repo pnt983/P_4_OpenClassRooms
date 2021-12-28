@@ -1,8 +1,9 @@
 from controllers.controller_joueurs import ControllerJoueur
+from controllers import controller_app
 
 
 def main():
-    pass
+    controller_app.run()
 
 
 if __name__ == "__main__":
