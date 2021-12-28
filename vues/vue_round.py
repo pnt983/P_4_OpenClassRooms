@@ -1,4 +1,4 @@
-class CreationRound:
+class VueRound:
     """ Tous les inputs pour la creation d'un tour"""
 
     def __init__(self):
@@ -11,5 +11,5 @@ class CreationRound:
         return int(input("Entrer 1 si c'est le joueur de gauche qui a gagné ou 2 si c'est celui de droite: "))
 
     def choix_pour_classer(self):
-        return int(input("Pour classer par classement, entrer \
-1. Par ordre alphabetique, entrer 2. Par score, entrer 3: "))
+        return int(input("Entrer 1 pour classer par classement, entrer 2 pour classer par \
+ordre alphabetique. Entrer 3 pour classer par score: "))

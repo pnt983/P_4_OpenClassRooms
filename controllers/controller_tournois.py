@@ -1,7 +1,6 @@
 from models import tournoi
 from vues.vue_tournoi import VueTournoi
 from . import controller_joueurs
-from models import tournoi
 
 
 class ControleurTournoi:
@@ -25,9 +24,10 @@ class ControleurTournoi:
                 i += 1
         else:
             i = 0
-            for i in range(choix_nombre_joueurs):
+            for i in range(int(choix_nombre_joueurs)):
                 controller_joueurs.ControllerJoueur.ajouter_joueur_au_tournoi(controller_joueurs.ControllerJoueur, nom, lieu)
                 i += 1
+
 
 def main():
     pass

@@ -1,9 +1,17 @@
 from . import tournoi
 from . import joueur
-from vues.vue_round import CreationRound
+from vues.vue_round import VueRound
+from tinydb import TinyDB, Query
 import time
 from itertools import islice, repeat
 from operator import itemgetter
+
+db = TinyDB("db.json")
+user = Query()
+table_joueur = db.table("Joueur")
+table_tournoi = db.table("Tournoi")
+table_joueur_par_tournoi = db.table("Joueur_du_tournoi")
+table_rounds_par_tournoi = db.table("Rounds")
 
 
 class Round:
@@ -12,18 +20,7 @@ class Round:
     def __init__(self):
         self.date_debut = time.strftime("%A %d %B %Y")
         self.heure_debut = time.strftime("%X")
-        self.nom = CreationRound.nom(CreationRound)
-
-    def debut_round(self):  # A faire
-        date = time.strftime("%A %d %B %Y")
-        heure = time.strftime("%X")
-        nom_du_tour = CreationRound.nom(CreationRound)
-        print(f"Le {nom_du_tour} commence le {date}, a {heure}.")
-
-    def fin_round(self):   # A faire
-        date = time.strftime("%A %d %B %Y")
-        heure = time.strftime("%X")
-        print(f"{date}{heure}")
+        self.nom = VueRound.nom(VueRound)
 
     def premieres_paires(self, nom_tournoi):
         " Classe les joueurs par meilleur classement et divise la liste en deux pour les associer"
@@ -47,7 +44,7 @@ class Round:
             "nom_round": self.nom,
             "matchs_du_round": matchs
         }
-        tournoi.table_rounds_par_tournoi.insert(serialise_joueur)
+        table_rounds_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
 
     def stocker_liste_des_matchs(self):
@@ -58,8 +55,8 @@ class Round:
         rapport au nom du tournoi et les classes par rapport au classement, a l'ordre alphabetique
         ou au score"""
         liste_joueurs = []
-        choix_du_classement = CreationRound.choix_pour_classer(CreationRound)
-        liste_du_tournoi = tournoi.table_joueur_par_tournoi.search(tournoi.user.nom_du_tournoi == nom_tournoi)
+        choix_du_classement = VueRound.choix_pour_classer(VueRound)
+        liste_du_tournoi = table_joueur_par_tournoi.search(user.nom_du_tournoi == nom_tournoi)
         for row in liste_du_tournoi:
             deserialise_joueur = [
                 row["nom"],
@@ -85,50 +82,47 @@ class Round:
     def entrer_resultat_matchs(self, nom_tournoi, nom_round):
         """Permet au gestionnaire de rentrer les resultats. Ils sont ensuite enregistrés
         dans la db 'table_joueur_par_tournoi' """
-        acces_db = tournoi.table_rounds_par_tournoi.search(tournoi.user.nom_du_tournoi == nom_tournoi and tournoi.user.
-                                                           nom_round == nom_round)
+        acces_db = table_rounds_par_tournoi.search(user.nom_du_tournoi == nom_tournoi and user.nom_round == nom_round)
         for matchs in acces_db:
             print(matchs['matchs_du_round'])
-            choix_gagnant = CreationRound.qui_gagne(CreationRound)
+            choix_gagnant = VueRound.qui_gagne(VueRound)
             if choix_gagnant == 1:
                 joueur_1 = matchs['matchs_du_round'][0]
                 joueur_1[5] += 1
-                tournoi.table_rounds_par_tournoi.update({"score": joueur_1[5]}, tournoi.user.nom == joueur_1[0])
-                table_joueur_tournoi = tournoi.table_joueur_par_tournoi.search(
-                    tournoi.user.nom_du_tournoi == nom_tournoi and tournoi.user.
-                    nom == joueur_1[0] and tournoi.user.prenom == joueur_1[1])
+                table_rounds_par_tournoi.update({"score": joueur_1[5]}, user.nom == joueur_1[0])
+                table_joueur_tournoi = table_joueur_par_tournoi.search(
+                    user.nom_du_tournoi == nom_tournoi and user.
+                    nom == joueur_1[0] and user.prenom == joueur_1[1])
                 for row in table_joueur_tournoi:
                     row["score"] += 1
-                    tournoi.table_joueur_par_tournoi.update({"score": row["score"]}, tournoi.user.nom == joueur_1[0])
+                    table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur_1[0])
             elif choix_gagnant == 2:
                 joueur_2 = matchs['matchs_du_round'][1]
                 joueur_2[5] += 1
-                tournoi.table_rounds_par_tournoi.update({"score": joueur_2[5]}, tournoi.user.nom == joueur_2[0])
-                table_joueur_tournoi = tournoi.table_joueur_par_tournoi.search(
-                    tournoi.user.nom_du_tournoi == nom_tournoi and tournoi.user.
-                    nom == joueur_2[0] and tournoi.user.prenom == joueur_2[1])
+                table_rounds_par_tournoi.update({"score": joueur_2[5]}, user.nom == joueur_2[0])
+                table_joueur_tournoi = table_joueur_par_tournoi.search(
+                    user.nom_du_tournoi == nom_tournoi and user.
+                    nom == joueur_2[0] and user.prenom == joueur_2[1])
                 for row in table_joueur_tournoi:
                     row["score"] += 1
-                    tournoi.table_joueur_par_tournoi.update({"score": row["score"]}, tournoi.user.nom == joueur_2[0])
+                    table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur_2[0])
             elif choix_gagnant == 3:
                 joueur_1 = matchs['matchs_du_round'][0]
                 joueur_1[5] += 0.5
-                tournoi.table_rounds_par_tournoi.update({"score": joueur_1[5]}, tournoi.user.nom == joueur_1[0])
-                table_joueur_tournoi = tournoi.table_joueur_par_tournoi.search(
-                    tournoi.user.nom_du_tournoi == nom_tournoi and tournoi.user.nom == joueur_1[0] and tournoi.user.
-                    prenom == joueur_1[1])
+                table_rounds_par_tournoi.update({"score": joueur_1[5]}, user.nom == joueur_1[0])
+                table_joueur_tournoi = table_joueur_par_tournoi.search(
+                    user.nom_du_tournoi == nom_tournoi and user.nom == joueur_1[0] and user.prenom == joueur_1[1])
                 for row in table_joueur_tournoi:
                     row["score"] += 0.5
-                    tournoi.table_joueur_par_tournoi.update({"score": row["score"]}, tournoi.user.nom == joueur_1[0])
+                    table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur_1[0])
                 joueur_2 = matchs['matchs_du_round'][1]
                 joueur_2[5] += 0.5
-                tournoi.table_rounds_par_tournoi.update({"score": joueur_2[5]}, tournoi.user.nom == joueur_2[0])
-                table_joueur_tournoi = tournoi.table_joueur_par_tournoi.search(
-                    tournoi.user.nom_du_tournoi == nom_tournoi and tournoi.user.nom == joueur_2[0] and tournoi.user.
-                    prenom == joueur_2[1])
+                table_rounds_par_tournoi.update({"score": joueur_2[5]}, user.nom == joueur_2[0])
+                table_joueur_tournoi = table_joueur_par_tournoi.search(
+                    user.nom_du_tournoi == nom_tournoi and user.nom == joueur_2[0] and user.prenom == joueur_2[1])
                 for row in table_joueur_tournoi:
                     row["score"] += 0.5
-                    tournoi.table_joueur_par_tournoi.update({"score": row["score"]}, tournoi.user.nom == joueur_2[0])
+                    table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur_2[0])
 
     def resultat_round(self):
         pass

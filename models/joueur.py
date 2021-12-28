@@ -45,14 +45,6 @@ class Joueur:
         }
         return serialise
 
-    def enregistrer_nouveau_joueur(self):  # A supprimer surement,fais doublon avec 'creer_joueur' du 'controller_joueur'
-        nouveau_joueur = controller_joueurs.ControllerJoueur.creer_joueur(controller_joueurs.ControllerJoueur)
-        serialise = self.serialise_joueur(nouveau_joueur)
-        tournoi.table_joueur.upsert(serialise,
-                                    tournoi.user.nom == nouveau_joueur.nom and tournoi.user.prenom == nouveau_joueur.prenom)
-        id_joueur = tournoi.table_joueur.get(tournoi.user.nom == nouveau_joueur.nom and tournoi.user.prenom == nouveau_joueur.nom)
-        return id_joueur.doc_id
-
     def ajouter_joueur_du_tournoi_a_db(self, nom_tournoi, lieu_tournoi, joueur_recuperer):
         """Ajoute le joueur a la table 'table_joueur_par_tournoi' de la db"""
         info_joueur = joueur_recuperer

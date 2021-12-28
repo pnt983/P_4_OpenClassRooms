@@ -51,12 +51,6 @@ class Tournoi:
             except ValueError:
                 print("Les lettres ne sont pas acceptees, veuillez saisir 1, 2 ou 3 pour faire votre choix")
 
-    """def ajouter_joueur_au_tournoi(self, nombre_joueur: int = 8):
-        i = 0
-        for i in range(nombre_joueur):
-            joueur.Joueur.entrer_joueur(joueur.Joueur, self.nom, self.lieu)
-            i += 1"""
-
     def enregistrer_tournoi(self):
         serialise = {
             "Nom du tournoi": self.nom,
