@@ -1,6 +1,5 @@
 from vues.vue_round import VueRound
 from models.round import Round
-from controllers.controller_tournois import ControleurTournoi
 import time
 
 
@@ -13,7 +12,7 @@ class ControllerRound:
         date = time.strftime("%A %d %B %Y")
         heure = time.strftime("%X")
         nom_du_tour = VueRound.nom(VueRound)
-        matchs = Round.premieres_paires(Round)
+        matchs = Round.premieres_paires(Round)  # Mettre les arguments
         print(f"Le {nom_du_tour} commence le {date}, a {heure}.")
         return matchs
 
@@ -28,5 +27,5 @@ class ControllerRound:
     def fin_round(self):   # A faire
         date = time.strftime("%A %d %B %Y")
         heure = time.strftime("%X")
-        Round.entrer_resultat_matchs(Round,)
+        Round.entrer_resultat_matchs(Round,)  # Mettre les arguments
         print(f"{date}{heure}")

@@ -1,7 +1,3 @@
-from . import joueur
-from vues.vue_tournoi import VueTournoi
-from controllers import controller_tournois
-import controllers.controller_app as controller_app
 from tinydb import TinyDB, Query
 import time
 
@@ -24,22 +20,7 @@ class Tournoi:
         self.controle_du_temps = controle_du_temps
         self.description = description
 
-    def nb_tours(self, nombre_tours) -> str:
-        while True:  # Probleme de boucle infini puisque j'ai plus le input
-            try:
-                choix_utilisateur = nombre_tours
-                if not choix_utilisateur:
-                    return "4"
-                elif int(choix_utilisateur):
-                    return f"{choix_utilisateur}"
-                else:
-                    print("Veuillez choisir un nombre. Les lettres ne sont pas autorises !")
-                    return "4"
-            except ValueError:
-                print("Veuillez choisir un nombre. Les lettres ne sont pas autorises !")
-                return "4"
-
-    def controle_temps(self, choix_input):
+    """def controle_temps(self, choix_input):
         choix = {1: "Bullet", 2: "Blitz", 3: "Coup rapide"}
         while True:   # Probleme de boucle infini puisque j'ai plus le input
             try:
@@ -49,15 +30,16 @@ class Tournoi:
                 else:
                     print(f"Le choix {choix_utilisateur} ne fais pas partie des options possibles")
             except ValueError:
-                print("Les lettres ne sont pas acceptees, veuillez saisir 1, 2 ou 3 pour faire votre choix")
+                print("Les lettres ne sont pas acceptees, veuillez saisir 1, 2 ou 3 pour faire votre choix")"""
 
-    def enregistrer_tournoi(self):
+    def enregistrer_tournoi(self, info_tournoi):
+        infos = info_tournoi
         serialise = {
-            "Nom du tournoi": self.nom,
-            "Lieu": self.lieu,
-            "Nombre de tour": self.nb_tour,
-            "Controle du temps": self.controle_du_temps,
-            "Description": self.description
+            "Nom du tournoi": infos.nom,
+            "Lieu": infos.lieu,
+            "Nombre de tour": infos.nb_tour,
+            "Controle du temps": infos.controle_du_temps,
+            "Description": infos.description
         }
         table_tournoi.insert(serialise)
 

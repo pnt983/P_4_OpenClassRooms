@@ -1,11 +1,10 @@
-from . import controller_joueurs
-from . import controller_tournois
+from .controller_tournois import ControleurTournoi
 
 
 def run():
-    test = controller_tournois.ControleurTournoi()
-    resultat = test.creer_tournoi()
-    test.ajouter_joueur_au_tournoi(resultat.nom, resultat.lieu)
+    tournoi_1 = ControleurTournoi()
+    resultat = tournoi_1.creer_tournoi()
+    tournoi_1.ajouter_joueur_au_tournoi(resultat.nom, resultat.lieu)
 
 
 def main():

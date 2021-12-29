@@ -23,6 +23,9 @@ directement sur entree: ")
     def choisir_nombre_joueur(self):
         return input("Entrer le nombre de joueurs a ajouter au tournoi: ")
 
+    def message_erreur(self):
+        print("Veuillez choisir un nombre. Les lettres ne sont pas autorises !")
+
 
 def main():
     pass

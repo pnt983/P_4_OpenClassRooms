@@ -1,4 +1,3 @@
-from controllers.controller_joueurs import ControllerJoueur
 from controllers import controller_app
 
 

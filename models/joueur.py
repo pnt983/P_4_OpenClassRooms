@@ -1,7 +1,13 @@
-from . import tournoi
-import vues.vue_joueurs as vue_joueurs
-import controllers.controller_joueurs as controller_joueurs
+from vues.vue_joueurs import VueJoueur
 from operator import itemgetter
+from tinydb import TinyDB, Query
+
+db = TinyDB("db.json")
+user = Query()
+table_joueur = db.table("Joueur")
+table_tournoi = db.table("Tournoi")
+table_joueur_par_tournoi = db.table("Joueur_du_tournoi")
+table_rounds_par_tournoi = db.table("Rounds")
 
 
 class Joueur:
@@ -57,18 +63,18 @@ class Joueur:
             "classement": info_joueur["classement"],
             "score": 0
         }
-        tournoi.table_joueur_par_tournoi.insert(serialise_joueur)
+        table_joueur_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
 
     def modifier_classement_joueur(self) -> str:
         """L'utilisateur peut modifier le classement d'un joueur par son ID"""
         while True:
             try:
-                joueur_a_modifier = vue_joueurs.VueJoueur.modifier_classement()
-                joueur_trouve = tournoi.table_joueur.get(doc_id=joueur_a_modifier)
+                joueur_a_modifier = VueJoueur.modifier_classement()
+                joueur_trouve = table_joueur.get(doc_id=joueur_a_modifier)
                 if joueur_trouve is not None:
-                    nouveau_classement = vue_joueurs.VueJoueur.nouveau_classement()
-                    tournoi.table_joueur.update({"classement": nouveau_classement}, doc_ids=[joueur_a_modifier])
+                    nouveau_classement = VueJoueur.nouveau_classement()
+                    table_joueur.update({"classement": nouveau_classement}, doc_ids=[joueur_a_modifier])
                     return joueur_trouve
                 else:
                     print("L'id ne fait pas partie de la DB.")
@@ -77,7 +83,7 @@ class Joueur:
 
     def recuperer_joueur_db(self, choix):
         """ Recupere le joueur dans la base de donnees par son 'id' """
-        chercher_id = tournoi.table_joueur.get(doc_id=choix)
+        chercher_id = table_joueur.get(doc_id=choix)
         if chercher_id != []:
             print(chercher_id)
             return chercher_id
