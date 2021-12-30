@@ -43,16 +43,20 @@ class ControleurTournoi:
 
     def ajouter_joueur_au_tournoi(self, nom, lieu, nombre_joueur: int = 8):
         choix_nombre_joueurs = VueTournoi.choisir_nombre_joueur(VueTournoi)
+        liste_joueurs = []
         if not choix_nombre_joueurs:
             i = 0
             for i in range(nombre_joueur):
-                ControllerJoueur.ajouter_joueur_au_tournoi(ControllerJoueur, nom, lieu)
+                nouveau_joueur = ControllerJoueur.ajouter_joueur_au_tournoi(ControllerJoueur, nom, lieu)
+                liste_joueurs.append(nouveau_joueur)
                 i += 1
         else:
             i = 0
             for i in range(int(choix_nombre_joueurs)):
-                ControllerJoueur.ajouter_joueur_au_tournoi(ControllerJoueur, nom, lieu)
+                nouveau_joueur = ControllerJoueur.ajouter_joueur_au_tournoi(ControllerJoueur, nom, lieu)
+                liste_joueurs.append(nouveau_joueur)
                 i += 1
+        return liste_joueurs
 
 
 def main():

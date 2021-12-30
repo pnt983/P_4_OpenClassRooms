@@ -13,3 +13,9 @@ class VueRound:
     def choix_pour_classer(self):
         return int(input("Entrer 1 pour classer par classement, entrer 2 pour classer par \
 ordre alphabetique. Entrer 3 pour classer par score: "))
+
+    def afficher_debut_round(self, nom_round, date, heure):
+        print(f"Le {nom_round} commence le {date}, a {heure}.")
+
+    def afficher_fin_round(self, nom_round, date, heure):
+        print(f"Le {nom_round} vient de finir le {date}, a {heure}.")
