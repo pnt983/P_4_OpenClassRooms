@@ -51,15 +51,21 @@ class Round:
         table_rounds_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
 
-    def stocker_liste_des_matchs(self):
-        pass
+    def ajouter_points_joueur(self, joueur, nom_tournoi):
+        table_rounds_par_tournoi.update({"score": joueur[5]}, user.nom == joueur[0])
+        table_joueur_tournoi = table_joueur_par_tournoi.search(
+            user.nom_du_tournoi == nom_tournoi and user.
+            nom == joueur[0] and user.prenom == joueur[1])
+        for row in table_joueur_tournoi:
+            row["score"] += 1
+            table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur[0])
 
-    def classer_joueurs(self, nom_tournoi, lieu_tournoi):
+    def classer_joueurs(self, nom_tournoi, lieu_tournoi, choix_classment):
         """ Recupere la liste de la table 'table_joueur_par_tournoi' dans la db par
         rapport au nom du tournoi et les classes par rapport au classement, a l'ordre alphabetique
         ou au score"""
         liste_joueurs = []
-        choix_du_classement = VueRound.choix_pour_classer(VueRound)
+        choix_du_classement = choix_classment
         liste_du_tournoi = table_joueur_par_tournoi.search(user.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi)
         for row in liste_du_tournoi:
             deserialise_joueur = [
@@ -83,15 +89,6 @@ class Round:
         else:
             print("Le choix est invalide")
         return liste_joueurs
-
-    def ajouter_points_joueur(self, joueur, nom_tournoi):
-        table_rounds_par_tournoi.update({"score": joueur[5]}, user.nom == joueur[0])
-        table_joueur_tournoi = table_joueur_par_tournoi.search(
-            user.nom_du_tournoi == nom_tournoi and user.
-            nom == joueur[0] and user.prenom == joueur[1])
-        for row in table_joueur_tournoi:
-            row["score"] += 1
-            table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur[0])
 
 
 def main():

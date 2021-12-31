@@ -11,16 +11,16 @@ class ControllerRound:
 
     def creer_premier_round(self, nom_tournoi, lieu_tournoi):   # Ajouter date et heure dans la db ?
         round = Round()
-        liste_joueurs = round.classer_joueurs(nom_tournoi, lieu_tournoi)
+        liste_joueurs = round.classer_joueurs(nom_tournoi, lieu_tournoi, VueRound.choix_pour_classer(VueRound))
         matchs = round.premieres_paires(nom_tournoi, lieu_tournoi, liste_joueurs)
         VueRound.afficher_debut_round(VueRound, round.nom, round.date_debut, round.heure_debut)
         return matchs, round.nom
 
     def creer_les_rounds_suivant(self, nom_tournoi, lieu_tournoi):  # A faire
         round = Round()
-        liste_joueurs = round.classer_joueurs(nom_tournoi, lieu_tournoi)
+        liste_joueurs = self.classer_joueurs(nom_tournoi, lieu_tournoi)
         matchs = Round.generer_paires(Round)
-        VueRound.creer_round(VueRound, round.nom, round.date_debut, round.heure_debut)
+        VueRound.afficher_debut_round(VueRound, round.nom, round.date_debut, round.heure_debut)
         return matchs
 
     def fin_round(self, nom_tournoi, nom_round):   # Ajouter date et heure dans la db ?
