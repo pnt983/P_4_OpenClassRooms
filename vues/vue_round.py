@@ -19,3 +19,6 @@ ordre alphabetique. Entrer 3 pour classer par score: "))
 
     def afficher_fin_round(self, nom_round, date, heure):
         print(f"Le {nom_round} vient de finir le {date}, a {heure}.")
+
+    def message_erreur(self):
+        print("Le choix est invalide")

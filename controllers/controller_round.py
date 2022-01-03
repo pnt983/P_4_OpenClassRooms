@@ -9,21 +9,23 @@ class ControllerRound:
     def __init__(self):
         pass
 
-    def creer_premier_round(self, nom_tournoi, lieu_tournoi):   # Ajouter date et heure dans la db ?
+    def creer_premier_round(self, nom_tournoi, lieu_tournoi):
         round = Round()
-        liste_joueurs = round.classer_joueurs(nom_tournoi, lieu_tournoi, VueRound.choix_pour_classer(VueRound))
+        liste_joueurs = round.classer_joueurs(nom_tournoi, lieu_tournoi,
+                                              VueRound.choix_pour_classer(VueRound), VueRound.message_erreur(VueRound))
         matchs = round.premieres_paires(nom_tournoi, lieu_tournoi, liste_joueurs)
         VueRound.afficher_debut_round(VueRound, round.nom, round.date_debut, round.heure_debut)
         return matchs, round.nom
 
     def creer_les_rounds_suivant(self, nom_tournoi, lieu_tournoi):  # A faire
         round = Round()
-        liste_joueurs = self.classer_joueurs(nom_tournoi, lieu_tournoi)
+        liste_joueurs = round.classer_joueurs(nom_tournoi, lieu_tournoi,
+                                              VueRound.choix_pour_classer(VueRound), VueRound.message_erreur(VueRound))
         matchs = Round.generer_paires(Round)
         VueRound.afficher_debut_round(VueRound, round.nom, round.date_debut, round.heure_debut)
         return matchs
 
-    def fin_round(self, nom_tournoi, nom_round):   # Ajouter date et heure dans la db ?
+    def fin_round(self, nom_tournoi, nom_round):
         date = time.strftime("%A %d %B %Y")
         heure = time.strftime("%X")
         VueRound.afficher_fin_round(VueRound, nom_round, date, heure)

@@ -45,6 +45,9 @@ class VueJoueur:
         for row in tournoi.table_joueur:
             print(f"ID joueur: {row.doc_id} {row}")
 
+    def message_erreur(self):
+        print("Votre choix n'est pas valide.")
+
 
 def main():
     pass

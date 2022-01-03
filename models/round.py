@@ -60,7 +60,7 @@ class Round:
             row["score"] += 1
             table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur[0])
 
-    def classer_joueurs(self, nom_tournoi, lieu_tournoi, choix_classment):
+    def classer_joueurs(self, nom_tournoi, lieu_tournoi, choix_classment, message_erreur):
         """ Recupere la liste de la table 'table_joueur_par_tournoi' dans la db par
         rapport au nom du tournoi et les classes par rapport au classement, a l'ordre alphabetique
         ou au score"""
@@ -87,7 +87,7 @@ class Round:
             liste_par_score = sorted(liste_joueurs, key=itemgetter(5), reverse=True)
             return liste_par_score
         else:
-            print("Le choix est invalide")
+            message_erreur
         return liste_joueurs
 
 

@@ -20,6 +20,9 @@ class Joueur:
         self.sexe_joueur = sexe
         self.classement_joueur = classement
 
+    def __repr__(self):
+        return f"{self.nom}, {self.prenom}, {self.classement_joueur}"
+
     def sexe(self, choix_input) -> str:
         while True:    # Probleme de boucle infini puisque j'ai plus le input
             choix = choix_input
@@ -66,21 +69,6 @@ class Joueur:
         table_joueur_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
 
-    def modifier_classement_joueur(self) -> str:
-        """L'utilisateur peut modifier le classement d'un joueur par son ID"""
-        while True:
-            try:
-                joueur_a_modifier = VueJoueur.modifier_classement()
-                joueur_trouve = table_joueur.get(doc_id=joueur_a_modifier)
-                if joueur_trouve is not None:
-                    nouveau_classement = VueJoueur.nouveau_classement()
-                    table_joueur.update({"classement": nouveau_classement}, doc_ids=[joueur_a_modifier])
-                    return joueur_trouve
-                else:
-                    print("L'id ne fait pas partie de la DB.")
-            except ValueError:
-                print("Seulement les chiffres et les nombres sont acceptés")
-
     def recuperer_joueur_db(self, choix):
         """ Recupere le joueur dans la base de donnees par son 'id' """
         chercher_id = table_joueur.get(doc_id=choix)
@@ -89,36 +77,6 @@ class Joueur:
             return chercher_id
         else:
             print("Le joueur n'est pas enregistrer dans la DB")
-
-    def classer_par_classement(self, table_db):  # Peut-etre a mettre dans 'raport', peut-etre utile pour 'round'
-        """Pour que dans le rapport, les joueurs soient classés par ordre de classement"""
-        liste_joueur = []
-        for row in table_db:
-            deserialise_joueur = [
-                row["nom"],
-                row["prenom"],
-                row["naissance"],
-                row["sexe"],
-                row["classement"]
-            ]
-            liste_joueur.append(deserialise_joueur)
-        liste_par_classement = sorted(liste_joueur, key=itemgetter(4), reverse=True)
-        return liste_par_classement
-
-    def classer_par_ordre_alphabetique(self, table_db):  # Peut-etre a mettre dans 'raport', peut-etre utile pour 'round'
-        """Pour que dans le rapport, les joueurs soient classés par ordre alphabetique"""
-        liste_joueur = []
-        for row in table_db:
-            deserialise_joueur = [
-                row["nom"],
-                row["prenom"],
-                row["naissance"],
-                row["sexe"],
-                row["classement"]
-            ]
-            liste_joueur.append(deserialise_joueur)
-        liste_par_ordre_alphabetique = sorted(liste_joueur, key=itemgetter(0))
-        return liste_par_ordre_alphabetique
 
 
 def main():
