@@ -11,17 +11,17 @@ class ControllerRound:
 
     def creer_premier_round(self, nom_tournoi, lieu_tournoi):
         round = Round()
-        liste_joueurs = round.classer_joueurs(nom_tournoi, lieu_tournoi,
-                                              VueRound.choix_pour_classer(VueRound), VueRound.message_erreur(VueRound))
+        deserialisation_joueur = round.deserialiser_joueurs(nom_tournoi, lieu_tournoi)
+        liste_joueurs = round.classer_par_classement(deserialisation_joueur)
         matchs = round.premieres_paires(nom_tournoi, lieu_tournoi, liste_joueurs)
         VueRound.afficher_debut_round(VueRound, round.nom, round.date_debut, round.heure_debut)
         return matchs, round.nom
 
-    def creer_les_rounds_suivant(self, nom_tournoi, lieu_tournoi):  # A faire
+    def creer_les_rounds_suivant(self, nom_tournoi, lieu_tournoi):
         round = Round()
-        liste_joueurs = round.classer_joueurs(nom_tournoi, lieu_tournoi,
-                                              VueRound.choix_pour_classer(VueRound), VueRound.message_erreur(VueRound))
-        matchs = Round.generer_paires(Round)
+        deserialisation_joueur = round.deserialiser_joueurs(nom_tournoi, lieu_tournoi)
+        liste_joueurs = round.classer_par_score(deserialisation_joueur)
+        matchs = round.generer_paires(nom_tournoi, lieu_tournoi, liste_joueurs)
         VueRound.afficher_debut_round(VueRound, round.nom, round.date_debut, round.heure_debut)
         return matchs
 

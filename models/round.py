@@ -31,11 +31,15 @@ class Round:
             self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, matchs)
         return liste_matchs
 
-    def generer_paires(self, nom_tournoi, lieu_tournoi):   # En cours
+    def generer_paires(self, nom_tournoi, lieu_tournoi, liste_joueurs):   # Revoir pour si un match est en double
         """Cree des matchs par rapport au score des joueurs"""
-        liste_joueurs = self.classer_joueurs(nom_tournoi, lieu_tournoi)
+        liste_matchs = []
         for premier, deuxieme in zip(islice(liste_joueurs, 0, None, 2), islice(liste_joueurs, 1, None, 2)):
-            print(premier, deuxieme)
+            matchs = (premier, deuxieme)
+            liste_matchs.append(matchs)
+            self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, matchs)
+        return liste_matchs
+
 
     def enregistrer_round_dans_db(self, nom_tournoi, lieu_tournoi, matchs_recuperer):
         """ Enregistre le nom du tournoi, le nom du round et les matchs du round dans
@@ -60,12 +64,11 @@ class Round:
             row["score"] += 1
             table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur[0])
 
-    def classer_joueurs(self, nom_tournoi, lieu_tournoi, choix_classment, message_erreur):
+    def deserialiser_joueurs(self, nom_tournoi, lieu_tournoi):
         """ Recupere la liste de la table 'table_joueur_par_tournoi' dans la db par
         rapport au nom du tournoi et les classes par rapport au classement, a l'ordre alphabetique
         ou au score"""
         liste_joueurs = []
-        choix_du_classement = choix_classment
         liste_du_tournoi = table_joueur_par_tournoi.search(user.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi)
         for row in liste_du_tournoi:
             deserialise_joueur = [
@@ -77,19 +80,19 @@ class Round:
                 row["score"]
             ]
             liste_joueurs.append(deserialise_joueur)
-        if choix_du_classement == 1:
-            liste_par_classement = sorted(liste_joueurs, key=itemgetter(4), reverse=True)
-            return liste_par_classement
-        elif choix_du_classement == 2:
-            liste_par_ordre_alphabetique = sorted(liste_joueurs, key=itemgetter(0))
-            return liste_par_ordre_alphabetique
-        elif choix_du_classement == 3:
-            liste_par_score = sorted(liste_joueurs, key=itemgetter(5), reverse=True)
-            return liste_par_score
-        else:
-            message_erreur
         return liste_joueurs
 
+    def classer_par_ordre_alphabetique(self, liste_joueurs):
+        liste_par_alphabet = sorted(liste_joueurs, key=itemgetter(0), reverse=True)
+        return liste_par_alphabet
+
+    def classer_par_classement(self, liste_joueurs):
+        liste_par_classement = sorted(liste_joueurs, key=itemgetter(4), reverse=True)
+        return liste_par_classement
+
+    def classer_par_score(self, liste_joueurs):
+        liste_par_score = sorted(liste_joueurs, key=itemgetter(5), reverse=True)
+        return liste_par_score
 
 def main():
     pass

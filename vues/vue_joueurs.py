@@ -1,5 +1,5 @@
 from models import tournoi
-
+from verificateur import Verification
 
 class VueJoueur:
 
@@ -7,19 +7,31 @@ class VueJoueur:
         pass
 
     def creer_infos_joueur(self):
-        nom = input("Nom du joueur: ").capitalize()
-        prenom = input("Prenom du joueur: ").capitalize()
         date_naissance = input("Date de naissance du joueur. Format: jj/mm/aaaa: ")
-        sexe = input("Entrer M pour les hommes et F pour les femmes: ").capitalize()
-        classement = int(input("Classement du joueur: "))
         dictionnaire = {
-            "nom": nom,
-            "prenom": prenom,
-            "date_naissance": date_naissance,
-            "sexe": sexe,
-            "classement": classement
+            "date_naissance": date_naissance
         }
         return dictionnaire
+
+    @Verification.verifier_input_remplit
+    def creer_nom_joueur(self):
+        return input("Entrer le nom du joueur: ").capitalize()
+
+    @Verification.verifier_input_remplit
+    def creer_prenom_joueur(self):
+        return input("Entrer le prenom du joueur: ").capitalize()
+
+    @Verification.verifier_sexe
+    def creer_sexe_joueur(self):
+        return input("Entrer M pour les hommes et F pour les femmes: ").capitalize()
+
+    @Verification.verifier_classement
+    def creer_classement_joueur(self):
+        return int(input("Classement du joueur: "))
+    
+    @Verification.verifier_date_naissance
+    def creer_date_naissance_joueur(self):
+        return input("Date de naissance du joueur. Format: jj/mm/aaaa: ")
 
     def choix_ajouter_joueur(self):
         return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
@@ -50,7 +62,11 @@ class VueJoueur:
 
 
 def main():
-    pass
+    VueJoueur.creer_nom_joueur(VueJoueur)
+    VueJoueur.creer_prenom_joueur(VueJoueur)
+    VueJoueur.creer_sexe_joueur(VueJoueur)
+    VueJoueur.creer_classement_joueur(VueJoueur)
+    VueJoueur.creer_date_naissance_joueur(VueJoueur)
 
 
 if __name__ == "__main__":
