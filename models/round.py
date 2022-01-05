@@ -48,14 +48,15 @@ class Round:
             "nom_du_tournoi": nom_tournoi + "," + lieu_tournoi,
             "nom_round": self.nom,
             "matchs_du_round": matchs,
-            "date": self.date_debut,
-            "heure": self.heure_debut
+            "date_debut_round": self.date_debut,
+            "heure_debut_round": self.heure_debut
         }
         table_rounds_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
 
     def ajouter_points_joueur(self, joueur, nom_tournoi):
-        table_rounds_par_tournoi.update({"score": joueur[5]}, user.nom == joueur[0])
+        table_rounds_par_tournoi.update({"score": joueur[5], "date_fin_round": time.strftime("%A %d %B %Y"),
+                                         "heure_fin_round": time.strftime("%X")}, user.nom == joueur[0])
         table_joueur_tournoi = table_joueur_par_tournoi.search(
             user.nom_du_tournoi == nom_tournoi and user.
             nom == joueur[0] and user.prenom == joueur[1])

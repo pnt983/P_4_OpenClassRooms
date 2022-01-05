@@ -28,17 +28,9 @@ class VueJoueur:
     def creer_date_naissance_joueur(self):
         return input("Date de naissance du joueur. Format: jj/mm/aaaa: ")
 
-    def choix_ajouter_joueur(self):
-        return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
-
     def choix_utilisateur(self):
         return int(input("Taper 1 pour chercher par nom et prenom. Ou 2 \
     pour choisir par id: "))
-
-    def choix_par_id(self):
-        for row in tournoi.table_joueur:
-            print(f"ID joueur: {row.doc_id} {row}")
-        return int(input("Entrer l'id du joueur: "))
 
     def modifier_classement(self) -> int:
         for row in tournoi.table_joueur:
@@ -51,9 +43,6 @@ class VueJoueur:
     def indice_joueur(self):
         for row in tournoi.table_joueur:
             print(f"ID joueur: {row.doc_id} {row}")
-
-    def message_erreur(self):
-        print("Votre choix n'est pas valide.")
 
 
 def main():

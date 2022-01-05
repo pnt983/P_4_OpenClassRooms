@@ -31,7 +31,7 @@ class ControllerRound:
         VueRound.afficher_fin_round(VueRound, nom_round, date, heure)
         self.entrer_resultat_matchs(nom_tournoi, nom_round)
 
-    def entrer_resultat_matchs(self, nom_tournoi, nom_round):
+    def entrer_resultat_matchs(self, nom_tournoi, nom_round):   # Revoir pour le match nul
         """Permet au gestionnaire de rentrer les resultats. Ils sont ensuite enregistrés
         dans la db 'table_joueur_par_tournoi'"""
         acces_db = round.table_rounds_par_tournoi.search(round.user.nom_du_tournoi == nom_tournoi and round.

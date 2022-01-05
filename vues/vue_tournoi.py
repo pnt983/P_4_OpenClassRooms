@@ -1,4 +1,4 @@
-
+from models import tournoi
 from verificateur import Verification
 
 
@@ -26,11 +26,19 @@ class VueTournoi:
     def controle_temps(self):
         return int(input("Taper 1 pour choisir Bullet, 2 pour choisir Blitz ou 3 pour choisir Coup rapide: "))
 
+    def choix_ajouter_joueur(self):
+        return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
+
+    def choix_par_id(self):
+        for row in tournoi.table_joueur:
+            print(f"ID joueur: {row.doc_id} {row}")
+        return int(input("Entrer l'id du joueur: "))
+
     def choisir_nombre_joueurs(self):
         return input("Entrer le nombre de joueurs a ajouter au tournoi: ")
 
     def message_erreur(self):
-        print("Veuillez choisir un nombre. Les lettres ne sont pas autorises !")
+        print("Votre choix n'est pas valide.")
 
 
 def main():

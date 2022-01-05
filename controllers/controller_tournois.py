@@ -23,16 +23,39 @@ class ControleurTournoi:
         if not choix_nombre_joueurs:
             i = 0
             for i in range(nombre_joueur):
-                nouveau_joueur = ControllerJoueur.ajouter_joueur_au_tournoi(ControllerJoueur, nom, lieu)
+                nouveau_joueur = self.ajouter_joueur(nom, lieu)
                 liste_joueurs.append(nouveau_joueur)
                 i += 1
         else:
             i = 0
             for i in range(int(choix_nombre_joueurs)):
-                nouveau_joueur = ControllerJoueur.ajouter_joueur_au_tournoi(ControllerJoueur, nom, lieu)
+                nouveau_joueur = self.ajouter_joueur(nom, lieu)
                 liste_joueurs.append(nouveau_joueur)
                 i += 1
         return liste_joueurs
+
+    def ajouter_joueur(self, nom_tournoi, lieu_tournoi):
+        """ Enregistre un nouveau joueur ou recupere dans la base de donnees pour l'ajouter au tournoi"""
+        while True:
+            choix = {1: "Creer nouveau joueur", 2: "Choisir joueur dans la base de donnee"}
+            try:
+                choix_utilisateur = VueTournoi.choix_ajouter_joueur(VueTournoi)
+                if choix_utilisateur in choix:
+                    if choix_utilisateur == 1:
+                        creer_joueur = ControllerJoueur.creer_joueur(ControllerJoueur)
+                        Tournoi.ajouter_joueur_du_tournoi_a_db(Tournoi, nom_tournoi, lieu_tournoi, creer_joueur)
+                        return creer_joueur
+                    elif choix_utilisateur == 2:
+                        choix = VueTournoi.choix_par_id(VueTournoi)
+                        joueur_recuperer = Tournoi.recuperer_joueur_db(Tournoi, choix)
+                        Tournoi.ajouter_joueur_du_tournoi_a_db(Tournoi, nom_tournoi, lieu_tournoi, joueur_recuperer)
+                        return joueur_recuperer
+                    else:
+                        VueTournoi.message_erreur(VueTournoi)
+                else:
+                    VueTournoi.message_erreur(VueTournoi)
+            except ValueError:
+                VueTournoi.message_erreur(VueTournoi)
 
 
 def main():
