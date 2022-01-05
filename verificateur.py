@@ -80,3 +80,20 @@ class Verification:
                 except ValueError:
                     print("Veuillez choisir parmi les choix disponibles.")
         return wrapper
+
+    def verifier_qui_gagne(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    if choix_utilisateur == 1:
+                        return choix_utilisateur
+                    elif choix_utilisateur == 2:
+                        return choix_utilisateur
+                    elif choix_utilisateur == 3:
+                        return choix_utilisateur
+                    else:
+                        print("Choix incorrect.")
+                except ValueError:
+                    print("Veuillez choisir parmi les choix disponibles.")
+        return wrapper

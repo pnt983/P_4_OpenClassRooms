@@ -40,7 +40,6 @@ class Round:
             self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, matchs)
         return liste_matchs
 
-
     def enregistrer_round_dans_db(self, nom_tournoi, lieu_tournoi, matchs_recuperer):
         """ Enregistre le nom du tournoi, le nom du round et les matchs du round dans
         la table 'table_rounds_par_tournois' """
@@ -93,6 +92,7 @@ class Round:
     def classer_par_score(self, liste_joueurs):
         liste_par_score = sorted(liste_joueurs, key=itemgetter(5), reverse=True)
         return liste_par_score
+
 
 def main():
     pass

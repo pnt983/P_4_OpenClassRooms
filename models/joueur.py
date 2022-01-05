@@ -1,3 +1,4 @@
+from database import DataBase
 from tinydb import TinyDB, Query
 
 
