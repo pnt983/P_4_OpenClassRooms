@@ -23,26 +23,6 @@ class Joueur:
     def __repr__(self):
         return f"{self.nom}, {self.prenom}, {self.classement_joueur}"
 
-    def sexe(self, choix_input) -> str:
-        while True:    # Probleme de boucle infini puisque j'ai plus le input
-            choix = choix_input
-            longueur = choix.__len__()
-            if longueur > 0 and longueur < 2:
-                if choix == "M" or choix == "F":
-                    return choix
-                else:
-                    print("Seulement F ou M.")
-            else:
-                print("Seulement un seul caractere.")
-
-    def classement(self, choix_classement) -> int:
-        while True:   # Probleme de boucle infini puisque j'ai plus le input
-            choix = choix_classement
-            if choix >= 0:
-                return choix
-            else:
-                print("Le classement d'un joueur ne peut pas etre negatif.")
-
     def serialise_joueur(self, joueur):
         joueur_info = joueur
         serialise = {
@@ -77,6 +57,10 @@ class Joueur:
             return chercher_id
         else:
             print("Le joueur n'est pas enregistrer dans la DB")
+
+    def enregistrer_joueur_dans_db(self, serialise, nom_joueur, prenom_joueur):
+        """Ajoute le joueur a 'table_joueur' de la db. Si il y est deja, il met a jour les infos données"""
+        table_joueur.upsert(serialise, user.nom == nom_joueur and user.prenom == prenom_joueur)
 
 
 def main():

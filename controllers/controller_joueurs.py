@@ -17,13 +17,13 @@ class ControllerJoueur:
 
     def creer_joueur(self):
         """ Cree un joueur et l'ajoute a la db 'table_joueur' """
-        infos = VueJoueur.creer_infos_joueur(VueJoueur)
-        self.joueur = Joueur(infos.get("nom"), infos.get("prenom"), infos.get("date_naissance"),
-                             Joueur.sexe(Joueur, infos.get("sexe")),
-                             Joueur.classement(Joueur, infos.get("classement")))
+        self.joueur = Joueur(VueJoueur.creer_nom_joueur(VueJoueur),
+                             VueJoueur.creer_prenom_joueur(VueJoueur),
+                             VueJoueur.creer_date_naissance_joueur(VueJoueur),
+                             VueJoueur.creer_sexe_joueur(VueJoueur),
+                             VueJoueur.creer_classement_joueur(VueJoueur))
         serialise = self.joueur.serialise_joueur(self.joueur)
-        table_joueur.upsert(serialise,
-                            user.nom == self.joueur.nom and user.prenom == self.joueur.prenom)
+        Joueur.enregistrer_joueur_dans_db(Joueur, serialise, self.joueur.nom, self.joueur.prenom)
         return serialise
 
     def ajouter_joueur_au_tournoi(self, nom_tournoi, lieu_tournoi):
@@ -53,7 +53,7 @@ class ControllerJoueur:
         """L'utilisateur peut modifier le classement d'un joueur par son ID"""
         while True:
             try:
-                joueur_a_modifier = VueJoueur.modifier_classement()
+                joueur_a_modifier = VueJoueur.modifier_classement(VueJoueur)
                 joueur_trouve = table_joueur.get(doc_id=joueur_a_modifier)
                 if joueur_trouve is not None:
                     nouveau_classement = VueJoueur.nouveau_classement()
@@ -67,7 +67,7 @@ class ControllerJoueur:
 
 def main():
     test = ControllerJoueur()
-    resultat = test.creer_joueur()
+    resultat = test.modifier_classement_joueur()
     print(resultat)
     print(type(resultat))
 

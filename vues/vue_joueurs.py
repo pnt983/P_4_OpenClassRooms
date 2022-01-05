@@ -1,17 +1,12 @@
 from models import tournoi
 from verificateur import Verification
 
+
 class VueJoueur:
+    """Controle tous les inputs et tous les prints"""
 
     def __init__(self):
         pass
-
-    def creer_infos_joueur(self):
-        date_naissance = input("Date de naissance du joueur. Format: jj/mm/aaaa: ")
-        dictionnaire = {
-            "date_naissance": date_naissance
-        }
-        return dictionnaire
 
     @Verification.verifier_input_remplit
     def creer_nom_joueur(self):
@@ -28,7 +23,7 @@ class VueJoueur:
     @Verification.verifier_classement
     def creer_classement_joueur(self):
         return int(input("Classement du joueur: "))
-    
+
     @Verification.verifier_date_naissance
     def creer_date_naissance_joueur(self):
         return input("Date de naissance du joueur. Format: jj/mm/aaaa: ")
@@ -62,11 +57,7 @@ class VueJoueur:
 
 
 def main():
-    VueJoueur.creer_nom_joueur(VueJoueur)
-    VueJoueur.creer_prenom_joueur(VueJoueur)
-    VueJoueur.creer_sexe_joueur(VueJoueur)
-    VueJoueur.creer_classement_joueur(VueJoueur)
-    VueJoueur.creer_date_naissance_joueur(VueJoueur)
+    pass
 
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 
 
-
 class Verification:
     """"Verification des inputs"""
 
