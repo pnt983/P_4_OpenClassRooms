@@ -52,3 +52,31 @@ class Verification:
                 except ValueError:
                     ValueError(print("Le champs ne peut pas etre vide"))
         return wrapper
+
+    def verifier_nombre_tours(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    if len(choix_utilisateur) == 0:
+                        return 4
+                    else:
+                        int(choix_utilisateur)
+                        return choix_utilisateur
+                except ValueError:
+                    print("Entrer seulement un chiffre ou un nombre.")
+        return wrapper
+
+    def verifier_controle_temps(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                choix = {1: "Bullet", 2: "Blitz", 3: "Coup rapide"}
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    if choix_utilisateur in choix:
+                        return choix[choix_utilisateur]
+                    else:
+                        print("Choix incorrect.")
+                except ValueError:
+                    print("Veuillez choisir parmi les choix disponibles.")
+        return wrapper

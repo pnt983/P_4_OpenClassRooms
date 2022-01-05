@@ -1,26 +1,32 @@
 
+from verificateur import Verification
+
+
 class VueTournoi:
     def __init__(self):
         pass
 
-    def creer_info_tournoi(self) -> dict:
-        nom_tournoi = input("Entree le nom de votre tournoi: ").capitalize()
-        lieu_tournoi = input("Entree lieu du tournoi: ").capitalize()
-        description = input("Mot du directeur: ").capitalize()
-        nombre_tours = input("Entree le nombre de tours voulu. Si vous voulez 4 tours, appuyer \
-directement sur entree: ")
-        controle_temps = int(input("Taper 1 pour choisir Bullet, 2 pour choisir Blitz ou \
-3 pour choisir Coup rapide: "))
-        dictionnaire = {
-            "nom": nom_tournoi,
-            "lieu": lieu_tournoi,
-            "description": description,
-            "nombre_tours": nombre_tours,
-            "controle_temps": controle_temps
-        }
-        return dictionnaire
+    @Verification.verifier_input_remplit
+    def creer_nom_tournoi(self):
+        return input("Entrer le nom de votre tournoi: ").capitalize()
 
-    def choisir_nombre_joueur(self):
+    @Verification.verifier_input_remplit
+    def creer_lieu_tournoi(self):
+        return input("Entrer lieu du tournoi: ").capitalize()
+
+    @Verification.verifier_input_remplit
+    def creer_description_tournoi(self):
+        return input("Mot du directeur: ").capitalize()
+
+    @Verification.verifier_nombre_tours
+    def nombre_tours_tournoi(self):
+        return input("Entrer le nombre de tours voulu. Si vous voulez 4 tours, appuyer directement sur entree: ")
+
+    @Verification.verifier_controle_temps
+    def controle_temps(self):
+        return int(input("Taper 1 pour choisir Bullet, 2 pour choisir Blitz ou 3 pour choisir Coup rapide: "))
+
+    def choisir_nombre_joueurs(self):
         return input("Entrer le nombre de joueurs a ajouter au tournoi: ")
 
     def message_erreur(self):

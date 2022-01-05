@@ -20,18 +20,6 @@ class Tournoi:
         self.controle_du_temps = controle_du_temps
         self.description = description
 
-    """def controle_temps(self, choix_input):
-        choix = {1: "Bullet", 2: "Blitz", 3: "Coup rapide"}
-        while True:   # Probleme de boucle infini puisque j'ai plus le input
-            try:
-                choix_utilisateur = choix_input
-                if choix_utilisateur in choix:
-                    return choix[choix_utilisateur]
-                else:
-                    print(f"Le choix {choix_utilisateur} ne fais pas partie des options possibles")
-            except ValueError:
-                print("Les lettres ne sont pas acceptees, veuillez saisir 1, 2 ou 3 pour faire votre choix")"""
-
     def enregistrer_tournoi(self, info_tournoi):
         infos = info_tournoi
         serialise = {

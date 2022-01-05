@@ -1,13 +1,5 @@
 from vues.vue_joueurs import VueJoueur
 from models.joueur import Joueur
-from tinydb import TinyDB, Query
-
-db = TinyDB("db.json")
-user = Query()
-table_joueur = db.table("Joueur")
-table_tournoi = db.table("Tournoi")
-table_joueur_par_tournoi = db.table("Joueur_du_tournoi")
-table_rounds_par_tournoi = db.table("Rounds")
 
 
 class ControllerJoueur:
@@ -49,25 +41,25 @@ class ControllerJoueur:
             except ValueError:
                 VueJoueur.message_erreur(VueJoueur)
 
-    def modifier_classement_joueur(self) -> str:
-        """L'utilisateur peut modifier le classement d'un joueur par son ID"""
-        while True:
-            try:
-                joueur_a_modifier = VueJoueur.modifier_classement(VueJoueur)
-                joueur_trouve = table_joueur.get(doc_id=joueur_a_modifier)
-                if joueur_trouve is not None:
-                    nouveau_classement = VueJoueur.nouveau_classement()
-                    table_joueur.update({"classement": nouveau_classement}, doc_ids=[joueur_a_modifier])
-                    return joueur_trouve
-                else:
-                    VueJoueur.message_erreur(VueJoueur)
-            except ValueError:
-                VueJoueur.message_erreur(VueJoueur)
+    # def modifier_classement_joueur(self) -> str:
+    #     """L'utilisateur peut modifier le classement d'un joueur par son ID"""
+    #     while True:
+    #         try:
+    #             joueur_a_modifier = VueJoueur.modifier_classement(VueJoueur)
+    #             joueur_trouve = table_joueur.get(doc_id=joueur_a_modifier)
+    #             if joueur_trouve is not None:
+    #                 nouveau_classement = VueJoueur.nouveau_classement()
+    #                 table_joueur.update({"classement": nouveau_classement}, doc_ids=[joueur_a_modifier])
+    #                 return joueur_trouve
+    #             else:
+    #                 VueJoueur.message_erreur(VueJoueur)
+    #         except ValueError:
+    #             VueJoueur.message_erreur(VueJoueur)
 
 
 def main():
     test = ControllerJoueur()
-    resultat = test.modifier_classement_joueur()
+    resultat = test.creer_joueur()
     print(resultat)
     print(type(resultat))
 

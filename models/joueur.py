@@ -1,6 +1,5 @@
-from vues.vue_joueurs import VueJoueur
-from operator import itemgetter
 from tinydb import TinyDB, Query
+
 
 db = TinyDB("db.json")
 user = Query()
@@ -19,9 +18,6 @@ class Joueur:
         self.date_de_naissance = date_naissance
         self.sexe_joueur = sexe
         self.classement_joueur = classement
-
-    def __repr__(self):
-        return f"{self.nom}, {self.prenom}, {self.classement_joueur}"
 
     def serialise_joueur(self, joueur):
         joueur_info = joueur
