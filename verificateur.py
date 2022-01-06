@@ -97,3 +97,16 @@ class Verification:
                 except ValueError:
                     print("Veuillez choisir parmi les choix disponibles.")
         return wrapper
+
+    def verifier_alphabetique_ou_classement(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    if choix_utilisateur == 1:
+                        return choix_utilisateur
+                    elif choix_utilisateur == 2:
+                        return choix_utilisateur
+                except ValueError:
+                    print("Veuillez choisir parmi les choix disponibles.")
+        return wrapper

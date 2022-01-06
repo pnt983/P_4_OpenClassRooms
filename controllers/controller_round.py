@@ -1,13 +1,15 @@
 from vues.vue_round import VueRound
 from models.round import Round
-from models import round
+from . import controller_app
 import time
 
 
 class ControllerRound:
 
     def __init__(self):
-        pass
+        self.table_joueur_par_tournoi = controller_app.ControllerApp().table_joueur_par_tournoi
+        self.table_rounds_par_tournoi = controller_app.ControllerApp().table_rounds_par_tournoi
+        self.query = controller_app.ControllerApp().user
 
     def creer_premier_round(self, nom_tournoi, lieu_tournoi):
         round = Round()
@@ -34,8 +36,9 @@ class ControllerRound:
     def entrer_resultat_matchs(self, nom_tournoi, nom_round):   # Revoir pour le match nul
         """Permet au gestionnaire de rentrer les resultats. Ils sont ensuite enregistrés
         dans la db 'table_joueur_par_tournoi'"""
-        acces_db = round.table_rounds_par_tournoi.search(round.user.nom_du_tournoi == nom_tournoi and round.
-                                                         user.nom_round == nom_round)
+        acces_db = controller_app.ControllerApp().table_rounds_par_tournoi.search(controller_app.ControllerApp().user.
+                                                        nom_du_tournoi == nom_tournoi and controller_app.ControllerApp().user.
+                                                        nom_round == nom_round)  # Voir avec Olivier, je ne sais pas pourquoi self.query et self. table ne marche pas ?
         for matchs in acces_db:
             print(matchs['matchs_du_round'])
             choix_gagnant = VueRound.qui_gagne(VueRound)

@@ -1,15 +1,8 @@
 from vues.vue_round import VueRound
-from tinydb import TinyDB, Query
+from controllers import controller_round as c_r
 import time
-from itertools import islice, repeat
+from itertools import islice
 from operator import itemgetter
-
-db = TinyDB("db.json")
-user = Query()
-table_joueur = db.table("Joueur")
-table_tournoi = db.table("Tournoi")
-table_joueur_par_tournoi = db.table("Joueur_du_tournoi")
-table_rounds_par_tournoi = db.table("Rounds")
 
 
 class Round:
@@ -51,25 +44,25 @@ class Round:
             "date_debut_round": self.date_debut,
             "heure_debut_round": self.heure_debut
         }
-        table_rounds_par_tournoi.insert(serialise_joueur)
+        c_r.ControllerRound().table_rounds_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
 
     def ajouter_points_joueur(self, joueur, nom_tournoi):
-        table_rounds_par_tournoi.update({"score": joueur[5], "date_fin_round": time.strftime("%A %d %B %Y"),
-                                         "heure_fin_round": time.strftime("%X")}, user.nom == joueur[0])
-        table_joueur_tournoi = table_joueur_par_tournoi.search(
-            user.nom_du_tournoi == nom_tournoi and user.
-            nom == joueur[0] and user.prenom == joueur[1])
+        c_r.ControllerRound().table_rounds_par_tournoi.update({"score": joueur[5]},
+                                                              c_r.ControllerRound().query.nom == joueur[0])
+        table_joueur_tournoi = c_r.ControllerRound().table_joueur_par_tournoi.search(c_r.ControllerRound().query.nom_du_tournoi == nom_tournoi and c_r.ControllerRound().query.
+                                        nom == joueur[0] and c_r.ControllerRound().query.prenom == joueur[1])
         for row in table_joueur_tournoi:
             row["score"] += 1
-            table_joueur_par_tournoi.update({"score": row["score"]}, user.nom == joueur[0])
+            c_r.ControllerRound().table_joueur_par_tournoi.update({"score": row["score"]},
+                                                                  c_r.ControllerRound().query.nom == joueur[0])
 
     def deserialiser_joueurs(self, nom_tournoi, lieu_tournoi):
         """ Recupere la liste de la table 'table_joueur_par_tournoi' dans la db par
-        rapport au nom du tournoi et les classes par rapport au classement, a l'ordre alphabetique
-        ou au score"""
+        rapport au nom du tournoi"""
         liste_joueurs = []
-        liste_du_tournoi = table_joueur_par_tournoi.search(user.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi)
+        liste_du_tournoi = c_r.ControllerRound().table_joueur_par_tournoi.search(c_r.ControllerRound().
+                                                                                 query.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi)
         for row in liste_du_tournoi:
             deserialise_joueur = [
                 row["nom"],

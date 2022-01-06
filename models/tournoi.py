@@ -1,15 +1,5 @@
-from tinydb import TinyDB, Query
+from controllers import controller_tournois
 import time
-
-from vues.vue_tournoi import VueTournoi
-
-
-db = TinyDB("db.json")
-user = Query()
-table_joueur = db.table("Joueur")
-table_tournoi = db.table("Tournoi")
-table_joueur_par_tournoi = db.table("Joueur_du_tournoi")
-table_rounds_par_tournoi = db.table("Rounds")
 
 
 class Tournoi:
@@ -31,7 +21,7 @@ class Tournoi:
             "Controle du temps": infos.controle_du_temps,
             "Description": infos.description
         }
-        table_tournoi.insert(serialise)
+        controller_tournois.ControleurTournoi().table_tournoi.insert(serialise)
 
     def ajouter_joueur_du_tournoi_a_db(self, nom_tournoi, lieu_tournoi, joueur_recuperer):
         """Ajoute le joueur a la table 'table_joueur_par_tournoi' de la db"""
@@ -45,24 +35,12 @@ class Tournoi:
             "classement": info_joueur["classement"],
             "score": 0
         }
-        table_joueur_par_tournoi.insert(serialise_joueur)
+        controller_tournois.ControleurTournoi().table_joueur_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
-
-    def recuperer_joueur_db(self, choix):
-        """ Recupere le joueur dans la base de donnees par son 'id' """
-        chercher_id = table_joueur.get(doc_id=choix)
-        if chercher_id != []:
-            print(chercher_id)
-            return chercher_id
-        else:
-            VueTournoi.message_erreur(VueTournoi)
-
-    def reprendre_tournoi(self):
-        pass
 
 
 def main():
-    Tournoi()
+    pass
 
 
 if __name__ == "__main__":

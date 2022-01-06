@@ -1,3 +1,4 @@
+from controllers import controller_joueurs
 from models import tournoi
 from verificateur import Verification
 
@@ -28,21 +29,22 @@ class VueJoueur:
     def creer_date_naissance_joueur(self):
         return input("Date de naissance du joueur. Format: jj/mm/aaaa: ")
 
-    def choix_utilisateur(self):
-        return int(input("Taper 1 pour chercher par nom et prenom. Ou 2 \
-    pour choisir par id: "))
-
+    @Verification.verifier_classement
     def modifier_classement(self) -> int:
-        for row in tournoi.table_joueur:
+        for row in controller_joueurs.ControllerJoueur().db:
             print(f"ID joueur: {row.doc_id} {row}")
         return int(input("Entrer l'id du joueur: "))
 
+    @Verification.verifier_classement
     def nouveau_classement(self) -> int:
         return int(input("Entrer le nouveau classement du joueur: "))
 
     def indice_joueur(self):
-        for row in tournoi.table_joueur:
+        for row in controller_joueurs.ControllerJoueur().db:
             print(f"ID joueur: {row.doc_id} {row}")
+
+    def message_erreur(self):
+        print("Le choix est incorrect")
 
 
 def main():

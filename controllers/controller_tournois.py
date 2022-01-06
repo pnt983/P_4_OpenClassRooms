@@ -1,12 +1,16 @@
 from models.tournoi import Tournoi
 from vues.vue_tournoi import VueTournoi
 from .controller_joueurs import ControllerJoueur
+from . import controller_app
 
 
 class ControleurTournoi:
 
     def __init__(self):
-        self.vue_tournoi = VueTournoi()
+        self.table_tournoi = controller_app.ControllerApp().table_tournoi
+        self.table_joueur_par_tournoi = controller_app.ControllerApp().table_joueur_par_tournoi
+        self.table_joueur = controller_app.ControllerApp().table_joueur
+        self.query = controller_app.ControllerApp().user
 
     def creer_tournoi(self):
         self.tournoi = Tournoi(VueTournoi.creer_nom_tournoi(VueTournoi),
@@ -47,7 +51,7 @@ class ControleurTournoi:
                         return creer_joueur
                     elif choix_utilisateur == 2:
                         choix = VueTournoi.choix_par_id(VueTournoi)
-                        joueur_recuperer = Tournoi.recuperer_joueur_db(Tournoi, choix)
+                        joueur_recuperer = self.recuperer_joueur_db(choix)
                         Tournoi.ajouter_joueur_du_tournoi_a_db(Tournoi, nom_tournoi, lieu_tournoi, joueur_recuperer)
                         return joueur_recuperer
                     else:
@@ -56,6 +60,15 @@ class ControleurTournoi:
                     VueTournoi.message_erreur(VueTournoi)
             except ValueError:
                 VueTournoi.message_erreur(VueTournoi)
+
+    def recuperer_joueur_db(self, choix):
+        """ Recupere le joueur dans la base de donnees par son 'id' """
+        chercher_id = self.table_joueur.get(doc_id=choix)
+        if chercher_id != []:
+            print(chercher_id)
+            return chercher_id
+        else:
+            VueTournoi.message_erreur(VueTournoi)
 
 
 def main():

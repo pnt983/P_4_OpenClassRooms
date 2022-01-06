@@ -1,13 +1,4 @@
-from database import DataBase
-from tinydb import TinyDB, Query
-
-
-db = TinyDB("db.json")
-user = Query()
-table_joueur = db.table("Joueur")
-table_tournoi = db.table("Tournoi")
-table_joueur_par_tournoi = db.table("Joueur_du_tournoi")
-table_rounds_par_tournoi = db.table("Rounds")
+from controllers import controller_joueurs
 
 
 class Joueur:
@@ -33,7 +24,10 @@ class Joueur:
 
     def enregistrer_joueur_dans_db(self, serialise, nom_joueur, prenom_joueur):
         """Ajoute le joueur a 'table_joueur' de la db. Si il y est deja, il met a jour les infos données"""
-        table_joueur.upsert(serialise, user.nom == nom_joueur and user.prenom == prenom_joueur)
+        controller_joueurs.ControllerJoueur().db.upsert(serialise,
+                                                        controller_joueurs.ControllerJoueur().
+                                                        query.nom == nom_joueur and controller_joueurs.
+                                                        ControllerJoueur().query.prenom == prenom_joueur)
 
 
 def main():

@@ -1,4 +1,4 @@
-from models import tournoi
+from controllers import controller_tournois
 from verificateur import Verification
 
 
@@ -30,7 +30,7 @@ class VueTournoi:
         return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
 
     def choix_par_id(self):
-        for row in tournoi.table_joueur:
+        for row in controller_tournois.ControleurTournoi().table_joueur:
             print(f"ID joueur: {row.doc_id} {row}")
         return int(input("Entrer l'id du joueur: "))
 
