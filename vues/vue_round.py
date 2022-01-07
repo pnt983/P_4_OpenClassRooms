@@ -21,3 +21,6 @@ gagné, 2 si c'est celui de droite ou 3 en cas de match nul: "))
 
     def afficher_fin_round(self, nom_round, date, heure):
         print(f"Le {nom_round} vient de finir le {date}, a {heure}.")
+
+    def montrer_message(self, message):
+        print(message)

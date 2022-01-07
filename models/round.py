@@ -21,7 +21,7 @@ class Round:
         for premier, deuxieme in zip(liste_a_classer, islice(liste_a_classer, int(separation_liste), None)):
             matchs = (premier, deuxieme)
             liste_matchs.append(matchs)
-            self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, matchs)
+        self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, liste_matchs)
         return liste_matchs
 
     def generer_paires(self, nom_tournoi, lieu_tournoi, liste_joueurs):   # Revoir pour si un match est en double
@@ -30,7 +30,7 @@ class Round:
         for premier, deuxieme in zip(islice(liste_joueurs, 0, None, 2), islice(liste_joueurs, 1, None, 2)):
             matchs = (premier, deuxieme)
             liste_matchs.append(matchs)
-            self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, matchs)
+        self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, liste_matchs)
         return liste_matchs
 
     def enregistrer_round_dans_db(self, nom_tournoi, lieu_tournoi, matchs_recuperer):
@@ -42,7 +42,9 @@ class Round:
             "nom_round": self.nom,
             "matchs_du_round": matchs,
             "date_debut_round": self.date_debut,
-            "heure_debut_round": self.heure_debut
+            "heure_debut_round": self.heure_debut,
+            "date_fin_round": "Le round n'est pas encore fini",
+            "heure_fin_round": "Le round n'est pas encore fini"
         }
         c_r.ControllerRound().table_rounds_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
@@ -50,6 +52,7 @@ class Round:
     def ajouter_points_joueur(self, joueur, nom_tournoi):
         c_r.ControllerRound().table_rounds_par_tournoi.update({"score": joueur[5]},
                                                               c_r.ControllerRound().query.nom == joueur[0])
+        
         table_joueur_tournoi = c_r.ControllerRound().table_joueur_par_tournoi.search(c_r.ControllerRound().query.nom_du_tournoi == nom_tournoi and c_r.ControllerRound().query.
                                         nom == joueur[0] and c_r.ControllerRound().query.prenom == joueur[1])
         for row in table_joueur_tournoi:
@@ -74,6 +77,11 @@ class Round:
             ]
             liste_joueurs.append(deserialise_joueur)
         return liste_joueurs
+
+    def ajouter_date_fin_round(self, nom_tournoi, lieu_tournoi, nom_round, date, heure):
+        c_r.ControllerRound().table_rounds_par_tournoi.update({"date_fin_round": date, "heure_fin_round": heure},
+                                                              c_r.ControllerRound().query.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and c_r.
+                                                              ControllerRound().query.nom_round == nom_round)
 
     def classer_par_ordre_alphabetique(self, liste_joueurs):
         liste_par_alphabet = sorted(liste_joueurs, key=itemgetter(0), reverse=True)
