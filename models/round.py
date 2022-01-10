@@ -49,16 +49,14 @@ class Round:
         c_r.ControllerRound().table_rounds_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
 
-    def ajouter_points_joueur(self, joueur, nom_tournoi):
-        c_r.ControllerRound().table_rounds_par_tournoi.update({"score": joueur[5]},
-                                                              c_r.ControllerRound().query.nom == joueur[0])
-        
+    def ajouter_points_joueur(self, joueur, nom_tournoi, score):
         table_joueur_tournoi = c_r.ControllerRound().table_joueur_par_tournoi.search(c_r.ControllerRound().query.nom_du_tournoi == nom_tournoi and c_r.ControllerRound().query.
                                         nom == joueur[0] and c_r.ControllerRound().query.prenom == joueur[1])
         for row in table_joueur_tournoi:
-            row["score"] += 1
+            row["score"] += score
             c_r.ControllerRound().table_joueur_par_tournoi.update({"score": row["score"]},
                                                                   c_r.ControllerRound().query.nom == joueur[0])
+        print(row["score"])
 
     def deserialiser_joueurs(self, nom_tournoi, lieu_tournoi):
         """ Recupere la liste de la table 'table_joueur_par_tournoi' dans la db par

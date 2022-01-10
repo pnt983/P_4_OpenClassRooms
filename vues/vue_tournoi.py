@@ -29,8 +29,10 @@ class VueTournoi:
     def choix_ajouter_joueur(self):
         return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
 
+    @Verification.verifier_doc_id
     def choix_par_id(self):
-        for row in controller_tournois.ControleurTournoi().table_joueur:
+        table_joueur = controller_tournois.ControleurTournoi().table_joueur
+        for row in table_joueur:
             print(f"ID joueur: {row.doc_id} {row}")
         return int(input("Entrer l'id du joueur: "))
 
