@@ -1,5 +1,5 @@
-from controllers import controller_tournois
 from verificateur import Verification
+import database
 
 
 class VueTournoi:
@@ -31,13 +31,16 @@ class VueTournoi:
 
     @Verification.verifier_doc_id
     def choix_par_id(self):
-        table_joueur = controller_tournois.ControleurTournoi().table_joueur
+        table_joueur = database.TABLE_JOUEUR
         for row in table_joueur:
             print(f"ID joueur: {row.doc_id} {row}")
         return int(input("Entrer l'id du joueur: "))
 
     def choisir_nombre_joueurs(self):
         return input("Entrer le nombre de joueurs a ajouter au tournoi: ")
+
+    def afficher_message(self, message):
+        print(message)
 
     def message_erreur(self):
         print("Votre choix n'est pas valide.")

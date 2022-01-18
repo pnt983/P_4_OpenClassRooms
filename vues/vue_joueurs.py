@@ -1,5 +1,5 @@
 from controllers import controller_joueurs
-from models import tournoi
+import database
 from verificateur import Verification
 
 
@@ -30,21 +30,34 @@ class VueJoueur:
         return input("Date de naissance du joueur. Format: jj/mm/aaaa: ")
 
     @Verification.verifier_classement
-    def modifier_classement(self) -> int:
-        for row in controller_joueurs.ControllerJoueur().db:
+    def modifier_classement(self, table) -> int:
+        for row in table:
             print(f"ID joueur: {row.doc_id} {row}")
-        return int(input("Entrer l'id du joueur: "))
+        return int(input("Entrer l'id du joueur pour modifier son classement: "))
 
     @Verification.verifier_classement
     def nouveau_classement(self) -> int:
         return int(input("Entrer le nouveau classement du joueur: "))
 
     def indice_joueur(self):
-        for row in controller_joueurs.ControllerJoueur().db:
+        for row in database.TABLE_JOUEUR:
             print(f"ID joueur: {row.doc_id} {row}")
 
     def message_erreur(self):
         print("Le choix est incorrect")
+
+    def afficher_message(self, message):
+        print(message)
+
+    def choix_ajouter_joueur(self):
+        return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
+
+    @Verification.verifier_doc_id
+    def choix_par_id(self):
+        table_joueur = database.TABLE_JOUEUR
+        for row in table_joueur:
+            print(f"ID joueur: {row.doc_id} {row}")
+        return int(input("Entrer l'id du joueur: "))
 
 
 def main():

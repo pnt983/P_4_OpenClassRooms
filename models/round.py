@@ -1,5 +1,5 @@
 from vues.vue_round import VueRound
-from controllers import controller_round as c_r
+import database
 import time
 from itertools import islice
 from operator import itemgetter
@@ -12,6 +12,9 @@ class Round:
         self.date_debut = time.strftime("%A %d %B %Y")
         self.heure_debut = time.strftime("%X")
         self.nom = VueRound.nom(VueRound)
+        self.table_round_par_tournoi = database.TABLE_ROUND_PAR_TOURNOI
+        self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
+        self.user = database.USER
 
     def premieres_paires(self, nom_tournoi, lieu_tournoi, liste_joueurs):
         " Classe les joueurs par meilleur classement et divise la liste en deux pour les associer"
@@ -46,24 +49,24 @@ class Round:
             "date_fin_round": "Le round n'est pas encore fini",
             "heure_fin_round": "Le round n'est pas encore fini"
         }
-        c_r.ControllerRound().table_rounds_par_tournoi.insert(serialise_joueur)
+        self.table_round_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
 
     def ajouter_points_joueur(self, joueur, nom_tournoi, score):
-        table_joueur_tournoi = c_r.ControllerRound().table_joueur_par_tournoi.search(c_r.ControllerRound().query.nom_du_tournoi == nom_tournoi and c_r.ControllerRound().query.
-                                        nom == joueur[0] and c_r.ControllerRound().query.prenom == joueur[1])
+        table_joueur_tournoi = self.table_joueur_par_tournoi.search(self.user.nom_du_tournoi == nom_tournoi and self.
+                                                                    user.nom == joueur[0] and self.user.
+                                                                    prenom == joueur[1])
         for row in table_joueur_tournoi:
             row["score"] += score
-            c_r.ControllerRound().table_joueur_par_tournoi.update({"score": row["score"]},
-                                                                  c_r.ControllerRound().query.nom == joueur[0])
+            self.table_joueur_par_tournoi.update({"score": row["score"]}, self.user.nom == joueur[0])
         print(row["score"])
 
     def deserialiser_joueurs(self, nom_tournoi, lieu_tournoi):
         """ Recupere la liste de la table 'table_joueur_par_tournoi' dans la db par
         rapport au nom du tournoi"""
         liste_joueurs = []
-        liste_du_tournoi = c_r.ControllerRound().table_joueur_par_tournoi.search(c_r.ControllerRound().
-                                                                                 query.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi)
+        liste_du_tournoi = self.table_joueur_par_tournoi.search(self.user.
+                                                                nom_du_tournoi == nom_tournoi + "," + lieu_tournoi)
         for row in liste_du_tournoi:
             deserialise_joueur = [
                 row["nom"],
@@ -77,9 +80,9 @@ class Round:
         return liste_joueurs
 
     def ajouter_date_fin_round(self, nom_tournoi, lieu_tournoi, nom_round, date, heure):
-        c_r.ControllerRound().table_rounds_par_tournoi.update({"date_fin_round": date, "heure_fin_round": heure},
-                                                              c_r.ControllerRound().query.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and c_r.
-                                                              ControllerRound().query.nom_round == nom_round)
+        self.table_round_par_tournoi.update({"date_fin_round": date, "heure_fin_round": heure}, self.user.
+                                            nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and self.user.
+                                            nom_round == nom_round)
 
     def classer_par_ordre_alphabetique(self, liste_joueurs):
         liste_par_alphabet = sorted(liste_joueurs, key=itemgetter(0), reverse=True)

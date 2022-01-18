@@ -1,4 +1,4 @@
-
+import database
 
 class Verification:
     """"Verification des inputs"""
@@ -45,7 +45,7 @@ class Verification:
                     if len(resultat) == 10:
                         if int(resultat[0:2]) > 0 and int(resultat[0:2]) <= 31:
                             if int(resultat[3:5]) > 0 and int(resultat[3:5]) <= 12:
-                                if int(resultat[6:10]) > 1900 and int(resultat[6:10]) < 2022:  # Essayer avec datetime pour l'annee max
+                                if int(resultat[6:10]) > 1900 and int(resultat[6:10]) < 2022:
                                     return resultat
                     else:
                         print("Veuillez respecter le format jj/mm/aaaa.")
@@ -107,6 +107,59 @@ class Verification:
                         return choix_utilisateur
                     elif choix_utilisateur == 2:
                         return choix_utilisateur
+                except ValueError:
+                    print("Veuillez choisir parmi les choix disponibles.")
+        return wrapper
+
+    def verifier_nom_dans_db(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    table_db = database.TABLE_TOURNOI.all()
+                    liste_noms = []
+                    for row in table_db:
+                        nom_tournoi = row["Nom du tournoi"]
+                        liste_noms.append(nom_tournoi)
+                    if choix_utilisateur in liste_noms:
+                        return choix_utilisateur
+                    else:
+                        print("Le choix n'est pas valide.")
+                except ValueError:
+                    print("Veuillez choisir parmi les choix disponibles.")
+        return wrapper
+
+    def verifier_lieu_dans_db(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    table_db = database.TABLE_TOURNOI.all()
+                    liste_lieux = []
+                    for row in table_db:
+                        nom_tournoi = row["Lieu"]
+                        liste_lieux.append(nom_tournoi)
+                    if choix_utilisateur in liste_lieux:
+                        return choix_utilisateur
+                    else:
+                        print("Le choix n'est pas valide.")
+                except ValueError:
+                    print("Veuillez choisir parmi les choix disponibles.")
+        return wrapper
+
+    def verifier_doc_id(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    table_joueur = database.TABLE_JOUEUR
+                    liste_ids = []
+                    for row in table_joueur:
+                        liste_ids.append(row.doc_id)
+                    if choix_utilisateur in liste_ids:
+                        return choix_utilisateur
+                    else:
+                        print("Le choix n'est pas valide.")
                 except ValueError:
                     print("Veuillez choisir parmi les choix disponibles.")
         return wrapper

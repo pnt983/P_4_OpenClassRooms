@@ -1,4 +1,4 @@
-from controllers import controller_joueurs
+import database
 
 
 class Joueur:
@@ -10,24 +10,33 @@ class Joueur:
         self.date_de_naissance = date_naissance
         self.sexe_joueur = sexe
         self.classement_joueur = classement
+        self.table_joueur = database.TABLE_JOUEUR
+        self.user = database.USER
+        self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
 
-    def serialise_joueur(self, joueur):
-        joueur_info = joueur
+    def serialiser_joueur(self):
         serialise = {
-            "nom": joueur_info.nom,
-            "prenom": joueur_info.prenom,
-            "naissance": joueur_info.date_de_naissance,
-            "sexe": joueur_info.sexe_joueur,
-            "classement": joueur_info.classement_joueur
+            "nom": self.nom,
+            "prenom": self.prenom,
+            "naissance": self.date_de_naissance,
+            "sexe": self.sexe_joueur,
+            "classement": self.classement_joueur
         }
         return serialise
 
-    def enregistrer_joueur_dans_db(self, serialise, nom_joueur, prenom_joueur):
+    def deserialise_joueur(self, info_joueur):
+        nom = info_joueur["nom"]
+        prenom = info_joueur["prenom"]
+        date_naissance = info_joueur["naissance"]
+        sexe = info_joueur["sexe"]
+        classement = info_joueur["classement"]
+        joueur = Joueur(nom=nom, prenom=prenom, date_naissance=date_naissance, sexe=sexe, classement=classement)
+        return joueur
+
+    def sauvegarder_joueur_dans_db(self):
         """Ajoute le joueur a 'table_joueur' de la db. Si il y est deja, il met a jour les infos données"""
-        controller_joueurs.ControllerJoueur().db.upsert(serialise,
-                                                        controller_joueurs.ControllerJoueur().
-                                                        query.nom == nom_joueur and controller_joueurs.
-                                                        ControllerJoueur().query.prenom == prenom_joueur)
+        data = self.serialiser_joueur()
+        self.table_joueur.upsert(data, self.user.nom == self.nom and self.user.prenom == self.prenom)
 
 
 def main():
