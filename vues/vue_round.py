@@ -16,11 +16,11 @@ class VueRound:
         return int(input("Entrer 1 si c'est le joueur de gauche qui a \
 gagné, 2 si c'est celui de droite ou 3 en cas de match nul: "))
 
-    def afficher_debut_round(self, nom_round, date, heure):
-        print(f"Le {nom_round} commence le {date}, a {heure}.")
+    def afficher_debut_round(self, nom_round, date):
+        print(f"Le {nom_round} commence le {date}.")
 
-    def afficher_fin_round(self, nom_round, date, heure):
-        print(f"Le {nom_round} vient de finir le {date}, a {heure}.")
+    def afficher_fin_round(self, nom_round, date):
+        print(f"Le {nom_round} vient de finir le {date}.")
 
     def montrer_message(self, message):
         print(message)

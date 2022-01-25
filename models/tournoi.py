@@ -1,5 +1,5 @@
 import database
-import time
+import datetime
 
 
 class Tournoi:
@@ -7,10 +7,12 @@ class Tournoi:
     def __init__(self, nom, lieu, description, nb_tour, controle_du_temps, nombre_joueur: int = 8):
         self.nom = nom
         self.lieu = lieu
-        self.date = time.strftime("%d-%m-%Y")
+        self.date = datetime.datetime.today().strftime('%Y-%m-%d')
         self.nb_tour = nb_tour
         self.controle_du_temps = controle_du_temps
         self.description = description
+        self.players = []
+        self.rounds = []
         self.table_tournoi = database.TABLE_TOURNOI
         self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
 
@@ -18,6 +20,7 @@ class Tournoi:
         serialise = {
             "Nom du tournoi": self.nom,
             "Lieu": self.lieu,
+            "Date": self.date,
             "Nombre de tour": self.nb_tour,
             "Controle du temps": self.controle_du_temps,
             "Description": self.description
@@ -28,26 +31,21 @@ class Tournoi:
         data = self.serialiser_tournoi()
         self.table_tournoi.insert(data)
 
-    def sauvegarder_joueur_du_tournoi_dans_db(self, nom_tournoi, lieu_tournoi, joueur_recuperer):
+    def sauvegarder_joueur_du_tournoi_dans_db(self, joueur_recuperer):
         """Ajoute le joueur a la table 'table_joueur_par_tournoi' de la db"""
         info_joueur = joueur_recuperer
-        liste = []
         for joueur in info_joueur:
             serialise_joueur = {
-                "nom": joueur["nom"],
-                "prenom": joueur["prenom"],
-                "naissance": joueur["naissance"],
-                "sexe": joueur["sexe"],
-                "classement": joueur["classement"],
+                "nom_du_tournoi": self.nom + "," + self.lieu,
+                "nom": joueur.nom,
+                "prenom": joueur.prenom,
+                "naissance": joueur.date_de_naissance,
+                "sexe": joueur.sexe_joueur,
+                "classement": joueur.classement_joueur,
                 "score": 0
             }
-            liste.append(serialise_joueur)
-        test = {
-            "nom_du_tournoi": nom_tournoi + "," + lieu_tournoi,
-            "joueur": liste
-        }
-        database.TABLE_JOUEUR_PAR_TOURNOI.insert(test)
-        return test
+            self.table_joueur_par_tournoi.insert(serialise_joueur)
+        return serialise_joueur
 
 
 def main():

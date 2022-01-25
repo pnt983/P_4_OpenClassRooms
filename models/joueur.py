@@ -24,6 +24,7 @@ class Joueur:
         }
         return serialise
 
+    @classmethod
     def deserialise_joueur(self, info_joueur):
         nom = info_joueur["nom"]
         prenom = info_joueur["prenom"]

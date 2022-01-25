@@ -59,13 +59,11 @@ class Rapport:
         liste_rounds = []
         for round in table_rounds:
             deserialise = [
-                round["nom_du_tournoi"],
                 round["nom_round"],
+                round["nom_du_tournoi"],
                 round["matchs_du_round"],
                 round["date_debut_round"],
-                round["heure_debut_round"],
-                round["date_fin_round"],
-                round["heure_fin_round"]
+                round["date_fin_round"]
             ]
             liste_rounds.append(deserialise)
         return liste_rounds

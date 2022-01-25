@@ -1,5 +1,6 @@
 import database
 
+
 class Verification:
     """"Verification des inputs"""
 
