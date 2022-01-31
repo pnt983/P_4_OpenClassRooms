@@ -1,4 +1,3 @@
-from cgi import test
 import database
 from models.rapport import Rapport
 from vues.vue_rapport import VueRapport

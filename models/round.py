@@ -11,6 +11,7 @@ class Round:
     def __init__(self):
         self.date = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         self.nom = VueRound.nom(VueRound)
+        self.match = []
         self.table_rounds_par_tournoi = database.TABLE_ROUND_PAR_TOURNOI
         self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
         self.user = database.USER
@@ -23,6 +24,7 @@ class Round:
         for premier, deuxieme in zip(liste_a_classer, islice(liste_a_classer, int(separation_liste), None)):
             matchs = (premier, deuxieme)
             liste_matchs.append(matchs)
+        self.match.append(liste_matchs)
         self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, liste_matchs)
         return liste_matchs
 
@@ -32,6 +34,7 @@ class Round:
         for premier, deuxieme in zip(islice(liste_joueurs, 0, None, 2), islice(liste_joueurs, 1, None, 2)):
             matchs = (premier, deuxieme)
             liste_matchs.append(matchs)
+        self.match.append(liste_matchs)
         self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, liste_matchs)
         return liste_matchs
 
@@ -39,23 +42,23 @@ class Round:
         """ Enregistre le nom du tournoi, le nom du round et les matchs du round dans
         la table 'table_rounds_par_tournois' """
         matchs = matchs_recuperer
-        serialise_joueur = {
+        serialise_round = {
             "nom_du_tournoi": nom_tournoi + "," + lieu_tournoi,
             "nom_round": self.nom,
             "matchs_du_round": matchs,
             "date_debut_round": self.date,
             "date_fin_round": "Le round n'est pas encore fini"
         }
-        self.table_rounds_par_tournoi.insert(serialise_joueur)
-        return serialise_joueur
+        self.table_rounds_par_tournoi.insert(serialise_round)
+        return serialise_round
 
-    def enregistrer_points_joueur(self, joueur, nom_tournoi, lieu_tournoi, score):   # revoir pourquoi 'self' ne marche pas
+    def enregistrer_points_joueur(self, joueur, nom_tournoi, lieu_tournoi, score):
         table_joueur_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI.search(database.USER.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and database.USER.nom == joueur[0])
         for row in table_joueur_tournoi:
             row["score"] += score
             database.TABLE_JOUEUR_PAR_TOURNOI.update({"score": row["score"]}, database.USER.
-                                                       nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and database.
-                                                       USER.nom == joueur[0])
+                                                     nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and database.
+                                                     USER.nom == joueur[0])
 
     def deserialiser_joueurs(self, nom_tournoi, lieu_tournoi):
         """ Recupere la liste de la table 'table_joueur_par_tournoi' dans la db par

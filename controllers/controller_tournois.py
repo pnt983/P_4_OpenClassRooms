@@ -8,6 +8,7 @@ class ControleurTournoi:
 
     def __init__(self):
         self.tournoi = None
+        self.joueur_du_tournoi = []
         self.table_tournoi = database.TABLE_TOURNOI
         self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
 
@@ -27,15 +28,25 @@ class ControleurTournoi:
             i = 0
             for i in range(nombre_joueur):
                 nouveau_joueur = ControllerJoueur.ajouter_joueur(ControllerJoueur)
+                self.joueur_du_tournoi.append(nouveau_joueur)
                 liste_joueurs.append(nouveau_joueur)
                 i += 1
         else:
             i = 0
             for i in range(int(choix_nombre_joueurs)):
                 nouveau_joueur = ControllerJoueur.ajouter_joueur(ControllerJoueur)
+                self.joueur_du_tournoi.append(nouveau_joueur)
                 liste_joueurs.append(nouveau_joueur)
                 i += 1
         return liste_joueurs
+
+    def chercher_tournoi_en_cours(self):
+        tous_les_tournois = self.table_tournoi.all()
+        for tournoi in tous_les_tournois:
+            if tournoi["etat_tournoi"] == "en_cours":
+                print(tournoi)
+            else:
+                pass
 
 
 def main():

@@ -15,15 +15,17 @@ class Tournoi:
         self.rounds = []
         self.table_tournoi = database.TABLE_TOURNOI
         self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
+        self.user = database.USER
 
     def serialiser_tournoi(self):
         serialise = {
-            "Nom du tournoi": self.nom,
-            "Lieu": self.lieu,
-            "Date": self.date,
-            "Nombre de tour": self.nb_tour,
-            "Controle du temps": self.controle_du_temps,
-            "Description": self.description
+            "nom_du_tournoi": self.nom,
+            "lieu": self.lieu,
+            "date": self.date,
+            "nombre_de_tour": self.nb_tour,
+            "controle_du_temps": self.controle_du_temps,
+            "description": self.description,
+            "etat_tournoi": "en_cours"
         }
         return serialise
 
@@ -46,6 +48,13 @@ class Tournoi:
             }
             self.table_joueur_par_tournoi.insert(serialise_joueur)
         return serialise_joueur
+
+    def cloturer_tournoi(self):
+        table_tournoi = self.table_tournoi.search(self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
+        for row in table_tournoi:
+            row["etat_tournoi"]
+            self.table_tournoi.update({"etat_tournoi": "Fini"}, self.user.nom_du_tournoi == self.nom and self.user.lieu == self.
+                                      lieu)
 
 
 def main():

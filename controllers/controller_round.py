@@ -2,12 +2,14 @@ from vues.vue_round import VueRound
 from models.round import Round
 import database
 import time
+from collections import namedtuple
 
 
 class ControllerRound:
 
     def __init__(self):
         self.round = None
+        self.match = []
         self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
         self.table_rounds_par_tournoi = database.TABLE_ROUND_PAR_TOURNOI
         self.user = database.USER
@@ -15,8 +17,10 @@ class ControllerRound:
     def creer_premier_round(self, nom_tournoi, lieu_tournoi):
         self.round = Round()
         deserialisation_joueur = self.round.deserialiser_joueurs(nom_tournoi, lieu_tournoi)
-        liste_joueurs = self.round.classer_par_classement(deserialisation_joueur)
-        matchs = self.round.premieres_paires(nom_tournoi, lieu_tournoi, liste_joueurs)
+        joueurs = self.round.classer_par_classement(deserialisation_joueur)
+        matchs = self.round.premieres_paires(nom_tournoi, lieu_tournoi, joueurs)
+        #Matchs = namedtuple(self.round.nom, matchs)
+        #self.round.match.append(Matchs)
         VueRound.afficher_debut_round(VueRound, self.round.nom, self.round.date)
         # return matchs, round.nom
         return self.round
@@ -26,6 +30,8 @@ class ControllerRound:
         deserialisation_joueur = self.round.deserialiser_joueurs(nom_tournoi, lieu_tournoi)
         liste_joueurs = self.round.classer_par_score(deserialisation_joueur)
         matchs = self.round.generer_paires(nom_tournoi, lieu_tournoi, liste_joueurs)
+        # Matchs = namedtuple(self.round.nom, matchs)
+        # self.round.match.append(Matchs)
         VueRound.afficher_debut_round(VueRound, self.round.nom, self.round.date)
         # return matchs, round.nom
         return self.round
@@ -47,7 +53,7 @@ class ControllerRound:
         for joueur in recuperation_matchs:
             VueRound.montrer_message(VueRound, joueur)
             choix_gagnant = VueRound.qui_gagne(VueRound)
-            if choix_gagnant == 1: 
+            if choix_gagnant == 1:
                 joueur_1 = joueur[0]
                 score = 1
                 Round.enregistrer_points_joueur(Round, joueur_1, nom_tournoi, lieu_tournoi, score)
