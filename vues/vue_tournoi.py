@@ -39,6 +39,14 @@ class VueTournoi:
     def choisir_nombre_joueurs(self):
         return input("Entrer le nombre de joueurs a ajouter au tournoi: ")
 
+    @Verification.verifier_nom_tournoi
+    def rechercher_nom_tournoi(self):
+        return input("Entrer le nom du tournoi que vous voulez reprendre: ").capitalize()
+
+    @Verification.verifier_lieu_tournoi
+    def rechercher_lieu_tournoi(self):
+        return input("Entrer le lieu du tournoi que vous voulez reprendre: ").capitalize()
+
     def afficher_message(self, message):
         print(message)
 

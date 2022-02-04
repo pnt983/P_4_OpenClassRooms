@@ -8,92 +8,82 @@ from operator import itemgetter
 class Round:
     """ Creation des tours pour le tournoi"""
 
-    def __init__(self):
+    compteur_round = 0
+    liste_des_matchs = []
+
+    def __init__(self, nom=None, date_debut_round=None, date_fin_round=None, etat_round=None, matchs_round=None):
         self.date = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        self.date_fin = "En_cours"
+        self.avancer_round = "En_cours"
         self.nom = VueRound.nom(VueRound)
         self.match = []
+        Round.compteur_round += 1
         self.table_rounds_par_tournoi = database.TABLE_ROUND_PAR_TOURNOI
         self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
+        self.table_tournoi = database.TABLE_TOURNOI
         self.user = database.USER
 
-    def premieres_paires(self, nom_tournoi, lieu_tournoi, liste_joueurs):
+    def premieres_paires(self, liste_joueurs):
         " Classe les joueurs par meilleur classement et divise la liste en deux pour les associer"
+        self.liste_des_matchs.clear()
         liste_a_classer = liste_joueurs
         liste_matchs = []
         separation_liste = len(liste_a_classer) / 2
         for premier, deuxieme in zip(liste_a_classer, islice(liste_a_classer, int(separation_liste), None)):
             matchs = (premier, deuxieme)
             liste_matchs.append(matchs)
-        self.match.append(liste_matchs)
-        self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, liste_matchs)
         return liste_matchs
 
-    def generer_paires(self, nom_tournoi, lieu_tournoi, liste_joueurs):   # Revoir pour si un match est en double
+    def generer_paires(self, liste_joueurs):   # Revoir pour si un match est en double
         """Cree des matchs par rapport au score des joueurs"""
         liste_matchs = []
         for premier, deuxieme in zip(islice(liste_joueurs, 0, None, 2), islice(liste_joueurs, 1, None, 2)):
             matchs = (premier, deuxieme)
             liste_matchs.append(matchs)
-        self.match.append(liste_matchs)
-        self.enregistrer_round_dans_db(nom_tournoi, lieu_tournoi, liste_matchs)
         return liste_matchs
 
-    def enregistrer_round_dans_db(self, nom_tournoi, lieu_tournoi, matchs_recuperer):
-        """ Enregistre le nom du tournoi, le nom du round et les matchs du round dans
-        la table 'table_rounds_par_tournois' """
-        matchs = matchs_recuperer
-        serialise_round = {
-            "nom_du_tournoi": nom_tournoi + "," + lieu_tournoi,
+    def serialiser_round(self):
+        liste_matchs_serialise = []
+        for row in self.liste_des_matchs[1]:
+            joueur_serialise = [joueur.serialiser_joueur() for joueur in row]
+            liste_matchs_serialise.append(joueur_serialise)
+        serialise = {
             "nom_round": self.nom,
-            "matchs_du_round": matchs,
             "date_debut_round": self.date,
-            "date_fin_round": "Le round n'est pas encore fini"
+            "date_fin_round": self.date_fin,
+            "etat_round": self.avancer_round,
+            "matchs_round": liste_matchs_serialise
         }
-        self.table_rounds_par_tournoi.insert(serialise_round)
-        return serialise_round
+        return serialise
 
-    def enregistrer_points_joueur(self, joueur, nom_tournoi, lieu_tournoi, score):
-        table_joueur_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI.search(database.USER.nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and database.USER.nom == joueur[0])
-        for row in table_joueur_tournoi:
-            row["score"] += score
-            database.TABLE_JOUEUR_PAR_TOURNOI.update({"score": row["score"]}, database.USER.
-                                                     nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and database.
-                                                     USER.nom == joueur[0])
+    @classmethod
+    def deserialiser_round(cls, infos_round):
+        nom = infos_round["nom_round"]
+        date_debut_round = infos_round["date_debut_round"]
+        date_fin_round = infos_round["date_fin_round"]
+        etat_round = infos_round["etat_round"]
+        matchs_round = infos_round["matchs_round"]
+        round = Round(nom, date_debut_round, date_fin_round, etat_round, matchs_round)
+        return round
 
-    def deserialiser_joueurs(self, nom_tournoi, lieu_tournoi):
-        """ Recupere la liste de la table 'table_joueur_par_tournoi' dans la db par
-        rapport au nom du tournoi"""
-        liste_joueurs = []
-        liste_du_tournoi = self.table_joueur_par_tournoi.search(self.user.
-                                                                nom_du_tournoi == nom_tournoi + "," + lieu_tournoi)
-        for joueur in liste_du_tournoi:
-            deserialise_joueur = [
-                joueur["nom"],
-                joueur["prenom"],
-                joueur["naissance"],
-                joueur["sexe"],
-                joueur["classement"],
-                joueur["score"]
-            ]
-            liste_joueurs.append(deserialise_joueur)
-        return liste_joueurs
+    def ajouter_date_fin_round(self):
+        self.date_fin = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        return self.date_fin
 
-    def ajouter_date_fin_round(self, nom_tournoi, lieu_tournoi):
-        date = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-        self.table_rounds_par_tournoi.update({"date_fin_round": date}, self.user.
-                                             nom_du_tournoi == nom_tournoi + "," + lieu_tournoi and self.user.
-                                             nom_round == self.nom)
+    def cloturer_round(self):
+        self.avancer_round = "Round completement fini"
+        return self.avancer_round
 
     def classer_par_ordre_alphabetique(self, liste_joueurs):
         liste_par_alphabet = sorted(liste_joueurs, key=itemgetter(0), reverse=True)
         return liste_par_alphabet
 
     def classer_par_classement(self, liste_joueurs):
-        liste_par_classement = sorted(liste_joueurs, key=itemgetter(4), reverse=True)
+        liste_par_classement = sorted(liste_joueurs, key=lambda joueur: joueur.classement_joueur, reverse=True)
         return liste_par_classement
 
     def classer_par_score(self, liste_joueurs):
-        liste_par_score = sorted(liste_joueurs, key=itemgetter(5), reverse=True)
+        liste_par_score = sorted(liste_joueurs, key=lambda joueur: joueur.score, reverse=True)
         return liste_par_score
 
 

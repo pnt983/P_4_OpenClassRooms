@@ -1,3 +1,4 @@
+from controllers.controller_round import ControllerRound
 from models.tournoi import Tournoi
 from vues.vue_tournoi import VueTournoi
 from .controller_joueurs import ControllerJoueur
@@ -8,7 +9,6 @@ class ControleurTournoi:
 
     def __init__(self):
         self.tournoi = None
-        self.joueur_du_tournoi = []
         self.table_tournoi = database.TABLE_TOURNOI
         self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
 
@@ -28,25 +28,31 @@ class ControleurTournoi:
             i = 0
             for i in range(nombre_joueur):
                 nouveau_joueur = ControllerJoueur.ajouter_joueur(ControllerJoueur)
-                self.joueur_du_tournoi.append(nouveau_joueur)
+                self.tournoi.joueur.append(nouveau_joueur)
                 liste_joueurs.append(nouveau_joueur)
                 i += 1
         else:
             i = 0
             for i in range(int(choix_nombre_joueurs)):
                 nouveau_joueur = ControllerJoueur.ajouter_joueur(ControllerJoueur)
-                self.joueur_du_tournoi.append(nouveau_joueur)
+                self.tournoi.joueur.append(nouveau_joueur)
                 liste_joueurs.append(nouveau_joueur)
                 i += 1
         return liste_joueurs
 
-    def chercher_tournoi_en_cours(self):
+    def afficher_tournoi_en_cours(self):
         tous_les_tournois = self.table_tournoi.all()
+        liste_tournois_encours = []
         for tournoi in tous_les_tournois:
             if tournoi["etat_tournoi"] == "en_cours":
-                print(tournoi)
+                infos_tournoi = [tournoi["nom_du_tournoi"], tournoi["lieu"], tournoi["date"],
+                                 tournoi["nombre_de_tour"], tournoi["controle_du_temps"], tournoi["description"],
+                                 tournoi["etat_tournoi"]]
+                liste_tournois_encours.append([infos_tournoi])
             else:
                 pass
+        VueTournoi.afficher_message(VueTournoi, liste_tournois_encours)
+        return liste_tournois_encours
 
 
 def main():

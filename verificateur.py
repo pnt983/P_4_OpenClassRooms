@@ -120,7 +120,7 @@ class Verification:
                     table_db = database.TABLE_TOURNOI.all()
                     liste_noms = []
                     for row in table_db:
-                        nom_tournoi = row["Nom du tournoi"]
+                        nom_tournoi = row["nom_du_tournoi"]
                         liste_noms.append(nom_tournoi)
                     if choix_utilisateur in liste_noms:
                         return choix_utilisateur
@@ -158,6 +158,44 @@ class Verification:
                     for row in table_joueur:
                         liste_ids.append(row.doc_id)
                     if choix_utilisateur in liste_ids:
+                        return choix_utilisateur
+                    else:
+                        print("Le choix n'est pas valide.")
+                except ValueError:
+                    print("Veuillez choisir parmi les choix disponibles.")
+        return wrapper
+
+    def verifier_nom_tournoi(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    tous_les_tournois = database.TABLE_TOURNOI.all()
+                    liste_tournois_encours = []
+                    for tournoi in tous_les_tournois:
+                        if tournoi["etat_tournoi"] == "en_cours":
+                            infos_tournoi = tournoi["nom_du_tournoi"]
+                            liste_tournois_encours.append(infos_tournoi)
+                    if choix_utilisateur in liste_tournois_encours:
+                        return choix_utilisateur
+                    else:
+                        print("Le choix n'est pas valide.")
+                except ValueError:
+                    print("Veuillez choisir parmi les choix disponibles.")
+        return wrapper
+
+    def verifier_lieu_tournoi(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_utilisateur = fonction(*args, **kwargs)
+                    tous_les_tournois = database.TABLE_TOURNOI.all()
+                    liste_tournois_encours = []
+                    for tournoi in tous_les_tournois:
+                        if tournoi["etat_tournoi"] == "en_cours":
+                            infos_tournoi = tournoi["lieu"]
+                            liste_tournois_encours.append(infos_tournoi)
+                    if choix_utilisateur in liste_tournois_encours:
                         return choix_utilisateur
                     else:
                         print("Le choix n'est pas valide.")

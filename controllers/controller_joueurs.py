@@ -29,7 +29,6 @@ class ControllerJoueur:
                 if choix_utilisateur in choix:
                     if choix_utilisateur == 1:
                         joueur = self.creer_joueur(ControllerJoueur)
-                        # serialise_joueur = joueur.serialiser_joueur()
                         return joueur
                     elif choix_utilisateur == 2:
                         choix = VueJoueur.choix_par_id(VueJoueur)
