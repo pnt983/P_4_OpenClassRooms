@@ -1,20 +1,17 @@
-import database
 
 
 class Joueur:
     """Enregistrer les nouveaux joueurs ou charger ceux enregistrés dans la base de donnees"""
 
-    def __init__(self, nom, prenom, date_naissance, sexe, classement, score=0):
+    def __init__(self, nom, prenom, date_naissance, sexe, classement, db_table_joueur, requete, score=0):
         self.nom = nom
         self.prenom = prenom
         self.date_de_naissance = date_naissance
         self.sexe_joueur = sexe
         self.classement_joueur = classement
         self.score = score
-        self.table_joueur = database.TABLE_JOUEUR
-        self.table_tournoi = database.TABLE_TOURNOI
-        self.user = database.USER
-        self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
+        self.table_joueur = db_table_joueur
+        self.user = requete
 
     def __repr__(self):
         return repr((self.nom, self.prenom, self.date_de_naissance, self.sexe_joueur, self.

@@ -1,5 +1,4 @@
 from vues.vue_round import VueRound
-import database
 import datetime
 from itertools import islice
 from operator import itemgetter
@@ -18,10 +17,6 @@ class Round:
         self.nom = VueRound.nom(VueRound)
         self.match = []
         Round.compteur_round += 1
-        self.table_rounds_par_tournoi = database.TABLE_ROUND_PAR_TOURNOI
-        self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
-        self.table_tournoi = database.TABLE_TOURNOI
-        self.user = database.USER
 
     def premieres_paires(self, liste_joueurs):
         " Classe les joueurs par meilleur classement et divise la liste en deux pour les associer"

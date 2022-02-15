@@ -1,14 +1,13 @@
 from vues.vue_joueurs import VueJoueur
 from models.joueur import Joueur
-import database
 
 
 class ControllerJoueur:
 
-    def __init__(self):
+    def __init__(self, db_table_joueur, requete):
         self.joueur = None
-        self.table = database.TABLE_JOUEUR
-        self.user = database.USER
+        self.table = db_table_joueur
+        self.user = requete
 
     def creer_joueur(self):
         """ Cree un joueur et l'ajoute a la db 'table_joueur' """
@@ -16,7 +15,9 @@ class ControllerJoueur:
                              VueJoueur.creer_prenom_joueur(VueJoueur),
                              VueJoueur.creer_date_naissance_joueur(VueJoueur),
                              VueJoueur.creer_sexe_joueur(VueJoueur),
-                             VueJoueur.creer_classement_joueur(VueJoueur))
+                             VueJoueur.creer_classement_joueur(VueJoueur),
+                             self.table,
+                             self.user)
         self.joueur.sauvegarder_joueur_dans_db()
         return self.joueur
 

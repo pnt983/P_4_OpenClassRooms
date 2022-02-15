@@ -3,15 +3,26 @@ from controllers.controller_joueurs import ControllerJoueur
 from .controller_tournois import ControleurTournoi
 from .controller_round import ControllerRound
 import menu
+from tinydb import TinyDB, Query
+
+
+DB = TinyDB("db.json")
+USER = Query()
+TABLE_JOUEUR = DB.table("Joueur")
+TABLE_TOURNOI = DB.table("Tournoi")
 
 
 class ControllerApp:
 
     def __init__(self):
-        self.controller_tournoi = ControleurTournoi()
-        self.controller_joueur = ControllerJoueur()
+        self.controller_tournoi = ControleurTournoi(TABLE_TOURNOI, USER)
+        self.controller_joueur = ControllerJoueur(TABLE_JOUEUR, USER)
         self.controller_round = ControllerRound()
-        self.controller_rapport = ControllerRapport()
+        self.controller_rapport = ControllerRapport(TABLE_JOUEUR, TABLE_TOURNOI, USER)
+
+    def test(self):
+        controller = ControllerApp()
+        controller.controller_tournoi.reprendre_tournoi()
 
     def run_tournoi(self):
         controller = ControllerApp()

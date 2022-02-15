@@ -138,7 +138,7 @@ class Verification:
                     table_db = database.TABLE_TOURNOI.all()
                     liste_lieux = []
                     for row in table_db:
-                        nom_tournoi = row["Lieu"]
+                        nom_tournoi = row["lieu"]
                         liste_lieux.append(nom_tournoi)
                     if choix_utilisateur in liste_lieux:
                         return choix_utilisateur

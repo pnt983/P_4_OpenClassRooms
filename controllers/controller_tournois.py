@@ -1,23 +1,23 @@
-from controllers.controller_round import ControllerRound
 from models.tournoi import Tournoi
 from vues.vue_tournoi import VueTournoi
 from .controller_joueurs import ControllerJoueur
-import database
 
 
 class ControleurTournoi:
 
-    def __init__(self):
+    def __init__(self, db_table_tournoi, requete_db):
         self.tournoi = None
-        self.table_tournoi = database.TABLE_TOURNOI
-        self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
+        self.table_tournoi = db_table_tournoi
+        self.user = requete_db
 
     def creer_tournoi(self):
         self.tournoi = Tournoi(VueTournoi.creer_nom_tournoi(VueTournoi),
                                VueTournoi.creer_lieu_tournoi(VueTournoi),
                                VueTournoi.creer_description_tournoi(VueTournoi),
                                VueTournoi.nombre_tours_tournoi(VueTournoi),
-                               VueTournoi.controle_temps(VueTournoi))
+                               VueTournoi.controle_temps(VueTournoi),
+                               self.table_tournoi,
+                               self.user)
         self.tournoi.enregistrer_tournoi()
         return self.tournoi
 
@@ -53,6 +53,13 @@ class ControleurTournoi:
                 pass
         VueTournoi.afficher_message(VueTournoi, liste_tournois_encours)
         return liste_tournois_encours
+
+    def reprendre_tournoi(self):
+        self.afficher_tournoi_en_cours()
+        nom_tournoi = VueTournoi.rechercher_nom_tournoi(VueTournoi)
+        lieu_tournoi = VueTournoi.rechercher_lieu_tournoi(VueTournoi)
+        recup_infos = Tournoi.recuperer_infos_tournoi(Tournoi, nom_tournoi, lieu_tournoi)
+        print(type(recup_infos), recup_infos.rounds, recup_infos.joueur)
 
 
 def main():

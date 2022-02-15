@@ -1,15 +1,11 @@
 from vues.vue_round import VueRound
 from models.round import Round
-import database
 
 
 class ControllerRound:
 
     def __init__(self):
         self.round = None
-        self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
-        self.table_rounds_par_tournoi = database.TABLE_ROUND_PAR_TOURNOI
-        self.user = database.USER
 
     def creer_premier_round(self, liste_joueurs):
         self.round = Round()

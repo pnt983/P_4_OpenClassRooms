@@ -1,11 +1,11 @@
-import database
 import datetime
 from controllers.controller_round import ControllerRound
 
 
 class Tournoi:
 
-    def __init__(self, nom, lieu, description, nb_tour, controle_du_temps, nombre_joueur: int = 8):
+    def __init__(self, nom, lieu, description, nb_tour, controle_du_temps,
+                 db_table_tournoi, query, nombre_joueur: int = 8):
         self.nom = nom
         self.lieu = lieu
         self.date = datetime.datetime.today().strftime('%Y-%m-%d')
@@ -14,9 +14,8 @@ class Tournoi:
         self.description = description
         self.joueur = []
         self.rounds = []
-        self.table_tournoi = database.TABLE_TOURNOI
-        self.table_joueur_par_tournoi = database.TABLE_JOUEUR_PAR_TOURNOI
-        self.user = database.USER
+        self.table_tournoi = db_table_tournoi
+        self.user = query
 
     def serialiser_tournoi(self):
         serialise = {
@@ -67,10 +66,17 @@ class Tournoi:
         self.table_tournoi.upsert(serialise, self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
 
     def recuperer_infos_tournoi(self, nom_tournoi, lieu_tournoi):
-        table_tournoi = database.TABLE_TOURNOI.search(database.USER.nom_du_tournoi == nom_tournoi and database.USER.
-                                                      lieu == lieu_tournoi)
+        table_tournoi = self.table_tournoi.search(self.user.nom_du_tournoi == nom_tournoi and self.user.
+                                                  lieu == lieu_tournoi)
         for row in table_tournoi:
+            print(type(row), row)
             tournoi = self.deserialiser_tournoi(row)
+            for joueur in row["joueurs"]:
+                # deserialiser le joueur
+                print(type(joueur), joueur)
+            for round in row["rounds"]:
+                # deserialiser le round
+                print(type(round), round)
         return tournoi
 
     def creer_premier_round(self):      # Lever cette forte dependance
