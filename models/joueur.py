@@ -37,8 +37,12 @@ class Joueur:
         classement = info_joueur["classement"]
         score = info_joueur["score"]
         joueur = Joueur(nom=nom, prenom=prenom, date_naissance=date_naissance, sexe=sexe, classement=classement,
-                        score=score)
+                        db_table_joueur=None, requete=None, score=score)
         return joueur
+
+    @classmethod
+    def test_deserialise(cls, document):
+        return cls(**document)
 
     def sauvegarder_joueur_dans_db(self):
         """Ajoute le joueur a 'table_joueur' de la db. Si il y est deja, il met a jour les infos données"""

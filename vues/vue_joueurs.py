@@ -1,5 +1,3 @@
-from controllers import controller_joueurs
-import database
 from verificateur import Verification
 
 
@@ -9,52 +7,62 @@ class VueJoueur:
     def __init__(self):
         pass
 
+    @classmethod
     @Verification.verifier_input_remplit
-    def creer_nom_joueur(self):
+    def creer_nom_joueur(cls):
         return input("Entrer le nom du joueur: ").capitalize()
 
+    @classmethod
     @Verification.verifier_input_remplit
-    def creer_prenom_joueur(self):
+    def creer_prenom_joueur(cls):
         return input("Entrer le prenom du joueur: ").capitalize()
 
+    @classmethod
     @Verification.verifier_sexe
-    def creer_sexe_joueur(self):
+    def creer_sexe_joueur(cls):
         return input("Entrer M pour les hommes et F pour les femmes: ").capitalize()
 
+    @classmethod
     @Verification.verifier_classement
-    def creer_classement_joueur(self):
+    def creer_classement_joueur(cls):
         return int(input("Classement du joueur: "))
 
+    @classmethod
     @Verification.verifier_date_naissance
-    def creer_date_naissance_joueur(self):
+    def creer_date_naissance_joueur(cls):
         return input("Date de naissance du joueur. Format: jj/mm/aaaa: ")
 
+    @classmethod
     @Verification.verifier_classement
-    def modifier_classement(self, table) -> int:
+    def modifier_classement(cls, table) -> int:
         for row in table:
             print(f"ID joueur: {row.doc_id} {row}")
         return int(input("Entrer l'id du joueur pour modifier son classement: "))
 
+    @classmethod
     @Verification.verifier_classement
-    def nouveau_classement(self) -> int:
+    def nouveau_classement(cls) -> int:
         return int(input("Entrer le nouveau classement du joueur: "))
 
-    def indice_joueur(self):
-        for row in database.TABLE_JOUEUR:
-            print(f"ID joueur: {row.doc_id} {row}")
+    # def indice_joueur(self):
+    #     for row in database.TABLE_JOUEUR:
+    #         print(f"ID joueur: {row.doc_id} {row}")
 
-    def message_erreur(self):
+    @classmethod
+    def message_erreur(cls):
         print("Le choix est incorrect")
 
-    def afficher_message(self, message):
+    @classmethod
+    def afficher_message(cls, message):
         print(message)
 
-    def choix_ajouter_joueur(self):
+    @classmethod
+    def choix_ajouter_joueur(cls):
         return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
 
+    @classmethod
     @Verification.verifier_doc_id
-    def choix_par_id(self):
-        table_joueur = database.TABLE_JOUEUR
+    def choix_par_id(cls, table_joueur):
         for row in table_joueur:
             print(f"ID joueur: {row.doc_id} {row}")
         return int(input("Entrer l'id du joueur: "))

@@ -1,19 +1,21 @@
 import datetime
-from controllers.controller_round import ControllerRound
+from .round import Round
+from models.joueur import Joueur
 
 
-class Tournoi:
+class Tournoi():
 
-    def __init__(self, nom, lieu, description, nb_tour, controle_du_temps,
-                 db_table_tournoi, query, nombre_joueur: int = 8):
+    def __init__(self, nom, lieu, description, nb_tour, controle_du_temps, joueurs=[], rounds=[],
+                 db_table_tournoi=None, query=None, nombre_joueur: int = 8):
         self.nom = nom
         self.lieu = lieu
         self.date = datetime.datetime.today().strftime('%Y-%m-%d')
         self.nb_tour = nb_tour
         self.controle_du_temps = controle_du_temps
         self.description = description
-        self.joueur = []
-        self.rounds = []
+        self.nombre_joueur = nombre_joueur
+        self.joueurs = joueurs
+        self.rounds = rounds
         self.table_tournoi = db_table_tournoi
         self.user = query
 
@@ -36,21 +38,37 @@ class Tournoi:
         nb_tour = info_tournoi["nombre_de_tour"]
         controle_temps = info_tournoi["controle_du_temps"]
         description = info_tournoi["description"]
-        tournoi = Tournoi(nom, lieu, description, nb_tour, controle_temps)
+        liste_joueurs = [Joueur.deserialise_joueur(joueur) for joueur in info_tournoi["joueurs"]]
+        liste_rounds = [Round.deserialiser_round(round) for round in info_tournoi["rounds"]]
+        tournoi = Tournoi(nom, lieu, description, nb_tour, controle_temps, liste_joueurs, liste_rounds)
         return tournoi
 
     def enregistrer_tournoi(self):
         data = self.serialiser_tournoi()
         self.table_tournoi.insert(data)
 
+    # def sauvegarder(self):
+    #     data = self.serialiser_tournoi()
+    #     self.table_tournoi.sauvegarder(data)
+    #     # return super().sauvegarder(data)
+
+    def enregistrer_joueur(self, liste_joueurs):
+        joueurs = self.joueurs.append(liste_joueurs)
+        return joueurs
+
+    def enregistrer_round(self, round):
+        round = self.rounds.append(round)
+        return round
+
     def sauvegarder_tournoi(self):
         liste_joueurs_serialise = []
         liste_rounds_serialise = []
-        for joueur in self.joueur:
-            joueur_serialise = joueur.serialiser_joueur()
-            liste_joueurs_serialise.append(joueur_serialise)
+        for row in self.joueurs:
+            for joueur in row:
+                joueur_serialise = joueur.serialiser_joueur()
+                liste_joueurs_serialise.append(joueur_serialise)
         for round in self.rounds:
-            round_serialise = round[1].serialiser_round()
+            round_serialise = round.serialiser_round()
             liste_rounds_serialise.append(round_serialise)
         serialise = {
             "nom_du_tournoi": self.nom,
@@ -65,29 +83,20 @@ class Tournoi:
         }
         self.table_tournoi.upsert(serialise, self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
 
-    def recuperer_infos_tournoi(self, nom_tournoi, lieu_tournoi):
-        table_tournoi = self.table_tournoi.search(self.user.nom_du_tournoi == nom_tournoi and self.user.
-                                                  lieu == lieu_tournoi)
+    @classmethod
+    def recuperer_infos_tournoi(cls, table, user, nom_tournoi, lieu_tournoi):
+        table_tournoi = table.search(user.nom_du_tournoi == nom_tournoi and user.
+                                     lieu == lieu_tournoi)
         for row in table_tournoi:
-            print(type(row), row)
-            tournoi = self.deserialiser_tournoi(row)
-            for joueur in row["joueurs"]:
-                # deserialiser le joueur
-                print(type(joueur), joueur)
-            for round in row["rounds"]:
-                # deserialiser le round
-                print(type(round), round)
+            tournoi = cls.deserialiser_tournoi(row)
+            liste_matchs = []
+            for round in tournoi.rounds:
+                for row in round.match:
+                    test = [Joueur.deserialise_joueur(joueur) for joueur in row]
+                    liste_matchs.append(test)
+            round.match = ([liste_matchs])
+            print("liste de match = ", liste_matchs)
         return tournoi
-
-    def creer_premier_round(self):      # Lever cette forte dependance
-        round = ControllerRound.creer_premier_round(ControllerRound, self.joueur)
-        self.rounds.append(round)
-        return round
-
-    def creer_rounds_suivant(self):    # Lever cette forte dependance
-        round = ControllerRound.creer_les_rounds_suivant(ControllerRound, self.joueur)
-        self.rounds.append(round)
-        return round
 
     def cloturer_tournoi(self):
         table_tournoi = self.table_tournoi.search(self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)

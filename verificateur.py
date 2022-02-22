@@ -202,3 +202,19 @@ class Verification:
                 except ValueError:
                     print("Veuillez choisir parmi les choix disponibles.")
         return wrapper
+
+    def verifier_nombre_joueurs(fonction):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    choix_nombre_joueurs = fonction(*args, **kwargs)
+                    if (int(choix_nombre_joueurs) % 2) == 0:
+                        if not choix_nombre_joueurs:
+                            return 8
+                        else:
+                            return int(choix_nombre_joueurs)
+                    else:
+                        print("Entrer uniquement un chiffre pair")
+                except ValueError:
+                    print("Uniquement les chiffres sont acceptés")
+        return wrapper

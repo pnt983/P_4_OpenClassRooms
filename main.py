@@ -1,9 +1,10 @@
-from controllers import controller_app
+from controllers.controller_app import ControllerApp
 
 
 def main():
-    controller_app.ControllerApp.menu_principal(controller_app.ControllerApp)
-    # controller_app.ControllerApp.test(controller_app.ControllerApp)
+    app = ControllerApp()
+    app.menu_principal()
+    # app.test()
 
 
 if __name__ == "__main__":

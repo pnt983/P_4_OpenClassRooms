@@ -1,4 +1,3 @@
-from vues.vue_round import VueRound
 import datetime
 from itertools import islice
 from operator import itemgetter
@@ -7,16 +6,19 @@ from operator import itemgetter
 class Round:
     """ Creation des tours pour le tournoi"""
 
-    compteur_round = 0
+    compteur_round = 1
     liste_des_matchs = []
 
-    def __init__(self, nom=None, date_debut_round=None, date_fin_round=None, etat_round=None, matchs_round=None):
+    def __init__(self, nom, date_debut_round=None, date_fin_round="En_cours", etat_round=None, matchs_round=[],
+                 compte_round=compteur_round):
         self.date = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-        self.date_fin = "En_cours"
+        self.date_fin = date_fin_round
         self.avancer_round = "En_cours"
-        self.nom = VueRound.nom(VueRound)
-        self.match = []
-        Round.compteur_round += 1
+        self.etat_round = etat_round
+        self.nom = nom
+        self.match = matchs_round
+        self.compteur_round += 1
+        self.compte_round = compte_round
 
     def premieres_paires(self, liste_joueurs):
         " Classe les joueurs par meilleur classement et divise la liste en deux pour les associer"
@@ -37,15 +39,27 @@ class Round:
             liste_matchs.append(matchs)
         return liste_matchs
 
-    def serialiser_round(self):
+    def serialiser_round(self):   # A revoir
         liste_matchs_serialise = []
-        for row in self.liste_des_matchs[1]:
-            joueur_serialise = [joueur.serialiser_joueur() for joueur in row]
-            liste_matchs_serialise.append(joueur_serialise)
+        for row in self.match:
+            for i in row:
+                # print(type(i), "i = ", i)
+            #     joueur_serialise = i.serialiser_joueur()
+            #     liste_matchs_serialise.append(joueur_serialise)
+                joueur_serialise = [joueur.serialiser_joueur() for joueur in i]
+                liste_matchs_serialise.append(joueur_serialise)
+        # print(type(row), "Je suis dans serialise joueur", row)
+                # for joueur in i:
+                #     joueur_serialise = joueur.serialiser_joueur()
+                #     liste_matchs_serialise.append(joueur_serialise)
+                    # print(type(joueur), joueur)
+        # joueur_serialise = [joueur.serialiser_joueur() for joueur in self.match]
+        # liste_matchs_serialise.append(joueur_serialise)
         serialise = {
             "nom_round": self.nom,
             "date_debut_round": self.date,
             "date_fin_round": self.date_fin,
+            "numero_du_round": self.compteur_round,
             "etat_round": self.avancer_round,
             "matchs_round": liste_matchs_serialise
         }
@@ -58,28 +72,31 @@ class Round:
         date_fin_round = infos_round["date_fin_round"]
         etat_round = infos_round["etat_round"]
         matchs_round = infos_round["matchs_round"]
-        round = Round(nom, date_debut_round, date_fin_round, etat_round, matchs_round)
-        return round
+        compte_round = infos_round["numero_du_round"]
+        objet_round = Round(nom, date_debut_round, date_fin_round, etat_round, matchs_round, compte_round)
+        return objet_round
 
     def ajouter_date_fin_round(self):
         self.date_fin = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         return self.date_fin
 
     def cloturer_round(self):
-        self.avancer_round = "Round completement fini"
-        return self.avancer_round
+        self.etat_round = "Round completement fini"
+        return self.etat_round
 
     def classer_par_ordre_alphabetique(self, liste_joueurs):
         liste_par_alphabet = sorted(liste_joueurs, key=itemgetter(0), reverse=True)
         return liste_par_alphabet
 
     def classer_par_classement(self, liste_joueurs):
-        liste_par_classement = sorted(liste_joueurs, key=lambda joueur: joueur.classement_joueur, reverse=True)
-        return liste_par_classement
+        for row in liste_joueurs:
+            liste_par_classement = sorted(row, key=lambda joueur: joueur.classement_joueur, reverse=True)
+            return liste_par_classement
 
     def classer_par_score(self, liste_joueurs):
-        liste_par_score = sorted(liste_joueurs, key=lambda joueur: joueur.score, reverse=True)
-        return liste_par_score
+        for row in liste_joueurs:
+            liste_par_score = sorted(row, key=lambda joueur: joueur.score, reverse=True)
+            return liste_par_score
 
 
 def main():
