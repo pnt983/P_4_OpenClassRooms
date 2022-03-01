@@ -1,5 +1,6 @@
 from models.rapport import Rapport
 from vues.vue_rapport import VueRapport
+import utilitaires.menu as menu
 
 
 class ControllerRapport:
@@ -67,3 +68,24 @@ class ControllerRapport:
         lieu_tournoi = VueRapport.entrer_lieu_tournoi()
         recuperer_matchs = self.rapport.recuperer_matchs_tournoi(nom_tournoi, lieu_tournoi)
         VueRapport.montrer_message(recuperer_matchs)
+
+    def gerer_rapports(self):
+        while True:
+            menu_rapport = menu.Menu("Menu rapport", menu.option_rapport)
+            choix_rapport = menu_rapport.display()
+            if choix_rapport == "1":
+                self.afficher_rapport_acteurs()
+            elif choix_rapport == "2":
+                self.afficher_joueurs_tournoi()
+            elif choix_rapport == "3":
+                self.afficher_tous_les_tournois()
+            elif choix_rapport == "4":
+                self.afficher_tous_tours_tournoi()
+            elif choix_rapport == "5":
+                self.afficher_tous_matchs_tournois()
+            elif choix_rapport == "6":
+                print("Retour en arriere")
+                break
+            else:
+                print("Choix invalide !")
+                pass

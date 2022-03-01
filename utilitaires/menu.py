@@ -20,9 +20,9 @@ class Menu:
 
     def display(self):
         while True:
-            print(Fore.BLUE + f"*************** {self.titre} ***************")
+            print(Fore.BLUE + f"*************** {self.titre} ***************\n")
             for option in self.options:
-                print(Fore.GREEN + option)
+                print(Fore.GREEN + option + "\n")
             choix_utilisateur = input(Fore.RED + "Entrer le numero de votre choix: ")
             try:
                 if int(choix_utilisateur) > 0 and int(choix_utilisateur) <= len(self.options):
@@ -34,7 +34,4 @@ class Menu:
 
 
 if __name__ == "__main__":
-    options = ["1-Gestion des tournois", "2-Gestion des joueurs", "3-Quitter"]
-    menu = Menu("Menu principal", options)
-    choix_utilisateur = menu.display()
-    print(choix_utilisateur)
+    pass

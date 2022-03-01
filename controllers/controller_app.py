@@ -2,7 +2,7 @@ from .controller_rapport import ControllerRapport
 from controllers.controller_joueurs import ControllerJoueur
 from .controller_tournois import ControleurTournoi
 from .controller_round import ControllerRound
-import menu
+import utilitaires.menu as menu
 from tinydb import TinyDB, Query
 
 
@@ -55,82 +55,64 @@ class ControllerApp:
         tournoi = self.controller_tournoi.reprendre_tournoi()
         tournoi.table_tournoi = self.controller_tournoi.table_tournoi
         tournoi.user = self.controller_tournoi.user
+        liste_rounds = []
         for round in tournoi.rounds:
-            if round.etat_round == "En_cours":
-                print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu} au tour n°{round.compte_round}")
-                round.ajouter_date_fin_round()
-                # for row in round.match:
-                #     for joueur in row:
-                #         test = Joueur.deserialise_joueur(joueur)
-                # print(type(joueur), joueur)
-                # self.controller_round.entrer_resultat_matchs(round.match)
-                round.cloturer_round()
-            else:
-                for round in tournoi.rounds:
-                    print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu} au tour n°{round.compte_round}")
-                    tournoi.joueurs = [tournoi.joueurs]
-                    for i in range(int(tournoi.nb_tour) - round.compte_round):
-                        round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
-                        tournoi.enregistrer_round(round_suivant)
-                        input("Appuyer sur 'Entrer' pour finir le round")
-                        round_suivant.ajouter_date_fin_round()
-                        self.controller_round.entrer_resultat_matchs(round_suivant.match)
-                        round_suivant.cloturer_round()
-                        i += 1
-                    tournoi.sauvegarder_tournoi()
-                    tournoi.cloturer_tournoi()
-                    break
-
-    def gerer_joueurs(self):
-        menu_joueur = menu.Menu("Menu joueur", menu.option_joueur)
-        choix_joueur = menu_joueur.display()
-        if choix_joueur == "1":
-            self.controller_joueur.creer_joueur()
-        elif choix_joueur == "2":
-            self.controller_joueur.modifier_classement_joueur()
-        elif choix_joueur == "3":
-            print("Retour en arriere")
+            liste_rounds.append(round)
+        if liste_rounds[-1].etat_round == "En_cours":
+            round = liste_rounds[-1]
+            print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu} au tour n°{len(liste_rounds)}")
+            tournoi.joueurs = [tournoi.joueurs]
+            round.ajouter_date_fin_round()
+            self.controller_round.entrer_resultat_matchs(round.match)
+            round.cloturer_round()
+            tournoi.test_sauvegarder_tournoi()
+            for i in range(int(tournoi.nb_tour) - len(liste_rounds)):
+                round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
+                tournoi.enregistrer_round(round_suivant)
+                input("Appuyer sur 'Entrer' pour finir le round")
+                round_suivant.ajouter_date_fin_round()
+                self.controller_round.entrer_resultat_matchs(round_suivant.match)
+                round_suivant.cloturer_round()
+                i += 1
+            tournoi.test_sauvegarder_tournoi()
+            tournoi.cloturer_tournoi()
         else:
-            print("Choix invalide !")
-
-    def gerer_rapports(self):
-        menu_rapport = menu.Menu("Menu rapport", menu.option_rapport)
-        choix_rapport = menu_rapport.display()
-        if choix_rapport == "1":
-            self.controller_rapport.afficher_rapport_acteurs()
-        elif choix_rapport == "2":
-            self.controller_rapport.afficher_joueurs_tournoi()
-        elif choix_rapport == "3":
-            self.controller_rapport.afficher_tous_les_tournois()
-        elif choix_rapport == "4":
-            self.controller_rapport.afficher_tous_tours_tournoi()
-        elif choix_rapport == "5":
-            self.controller_rapport.afficher_tous_matchs_tournois()
-        elif choix_rapport == "6":
-            print("Retour en arriere")
-        else:
-            print("Choix invalide !")
-            pass
+            round = liste_rounds[-1]
+            print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu}. Le tour précédent etait \
+le tour n°{len(liste_rounds)}")
+            tournoi.joueurs = [tournoi.joueurs]
+            for i in range(int(tournoi.nb_tour) - len(liste_rounds)):
+                round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
+                tournoi.enregistrer_round(round_suivant)
+                input("Appuyer sur 'Entrer' pour finir le round")
+                round_suivant.ajouter_date_fin_round()
+                self.controller_round.entrer_resultat_matchs(round_suivant.match)
+                round_suivant.cloturer_round()
+                i += 1
+            tournoi.test_sauvegarder_tournoi()
+            tournoi.cloturer_tournoi()
 
     def menu_principal(self):
         while True:
             menu_general = menu.Menu("Menu principal", menu.option_principale)
             choix_principal = menu_general.display()
             if choix_principal == "1":
-                menu_tournoi = menu.Menu("Menu tournoi", menu.option_tournoi)
-                choix_tournoi = menu_tournoi.display()
-                if choix_tournoi == "1":
-                    self.run_tournoi()
-                elif choix_tournoi == "2":
-                    self.reprendre_tournoi()
-                elif choix_tournoi == "3":
-                    print("Retour au menu principal")
-                else:
-                    print("Choix invalide !")
+                while True:
+                    menu_tournoi = menu.Menu("Menu tournoi", menu.option_tournoi)
+                    choix_tournoi = menu_tournoi.display()
+                    if choix_tournoi == "1":
+                        self.run_tournoi()
+                    elif choix_tournoi == "2":
+                        self.reprendre_tournoi()
+                    elif choix_tournoi == "3":
+                        print("Retour au menu principal")
+                        break
+                    else:
+                        print("Choix invalide !")
             elif choix_principal == "2":
-                self.gerer_joueurs()
+                self.controller_joueur.gerer_joueurs()
             elif choix_principal == "3":
-                self.gerer_rapports()
+                self.controller_rapport.gerer_rapports()
             elif choix_principal == "4":
                 print("A bientot")
                 break

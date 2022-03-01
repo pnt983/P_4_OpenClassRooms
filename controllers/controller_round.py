@@ -9,7 +9,6 @@ class ControllerRound:
 
     def creer_premier_round(self, liste_joueurs):
         self.round = Round(VueRound.nom())
-        self.round.compteur_round = 1
         joueurs = self.round.classer_par_classement(liste_joueurs)
         matchs = self.round.premieres_paires(joueurs)
         self.round.match.append(matchs)

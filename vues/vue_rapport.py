@@ -1,4 +1,4 @@
-from verificateur import Verification
+from utilitaires.verificateur import Verification
 
 
 class VueRapport:

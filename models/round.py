@@ -1,24 +1,21 @@
 import datetime
 from itertools import islice
 from operator import itemgetter
+from .joueur import Joueur
 
 
 class Round:
     """ Creation des tours pour le tournoi"""
 
-    compteur_round = 1
     liste_des_matchs = []
 
-    def __init__(self, nom, date_debut_round=None, date_fin_round="En_cours", etat_round=None, matchs_round=[],
-                 compte_round=compteur_round):
+    def __init__(self, nom, date_debut_round=None, date_fin_round="En_cours", etat_round="En_cours", matchs_round=[]):
         self.date = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         self.date_fin = date_fin_round
         self.avancer_round = "En_cours"
         self.etat_round = etat_round
         self.nom = nom
         self.match = matchs_round
-        self.compteur_round += 1
-        self.compte_round = compte_round
 
     def premieres_paires(self, liste_joueurs):
         " Classe les joueurs par meilleur classement et divise la liste en deux pour les associer"
@@ -39,11 +36,12 @@ class Round:
             liste_matchs.append(matchs)
         return liste_matchs
 
-    def serialiser_round(self):   # A revoir
+    def serialiser_round(self):
         liste_matchs_serialise = []
         for row in self.match:
+            print(type(row), "row = ", row)
             for i in row:
-                # print(type(i), "i = ", i)
+                print(type(i), "i = ", i)
             #     joueur_serialise = i.serialiser_joueur()
             #     liste_matchs_serialise.append(joueur_serialise)
                 joueur_serialise = [joueur.serialiser_joueur() for joueur in i]
@@ -59,8 +57,40 @@ class Round:
             "nom_round": self.nom,
             "date_debut_round": self.date,
             "date_fin_round": self.date_fin,
-            "numero_du_round": self.compteur_round,
-            "etat_round": self.avancer_round,
+            "etat_round": self.etat_round,
+            "matchs_round": liste_matchs_serialise
+        }
+        return serialise
+
+    def test_serialiser_round(self):   # A revoir
+        liste_matchs_serialise = []
+        print(type(self.match[-1]), "match[-1] = ", self.match[-1])
+        for joueur in self.match[-1]:
+            print(type(joueur), "joueur = ", joueur)
+        #     for row in joueur:
+        #         print(type(row), "row = ", row)
+            # joueur_serialise = [row.serialiser_joueur() for row in joueur]
+            # liste_matchs_serialise.append(joueur_serialise)
+        # for row in self.match:
+        #     print(type(row), "row = ", row)
+        #     for i in row:
+        #         print(type(i), "i = ", i)
+            #     joueur_serialise = i.serialiser_joueur()
+            #     liste_matchs_serialise.append(joueur_serialise)
+                # joueur_serialise = [joueur.serialiser_joueur() for joueur in i]
+                # liste_matchs_serialise.append(joueur_serialise)
+        # print(type(row), "Je suis dans serialise joueur", row)
+                # for joueur in i:
+                #     joueur_serialise = joueur.serialiser_joueur()
+                #     liste_matchs_serialise.append(joueur_serialise)
+                    # print(type(joueur), joueur)
+        # joueur_serialise = [joueur.serialiser_joueur() for joueur in self.match]
+        # liste_matchs_serialise.append(joueur_serialise)
+        serialise = {
+            "nom_round": self.nom,
+            "date_debut_round": self.date,
+            "date_fin_round": self.date_fin,
+            "etat_round": self.etat_round,
             "matchs_round": liste_matchs_serialise
         }
         return serialise
@@ -72,8 +102,7 @@ class Round:
         date_fin_round = infos_round["date_fin_round"]
         etat_round = infos_round["etat_round"]
         matchs_round = infos_round["matchs_round"]
-        compte_round = infos_round["numero_du_round"]
-        objet_round = Round(nom, date_debut_round, date_fin_round, etat_round, matchs_round, compte_round)
+        objet_round = Round(nom, date_debut_round, date_fin_round, etat_round, matchs_round)
         return objet_round
 
     def ajouter_date_fin_round(self):

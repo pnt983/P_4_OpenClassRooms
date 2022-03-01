@@ -89,12 +89,14 @@ class Tournoi():
                                      lieu == lieu_tournoi)
         for row in table_tournoi:
             tournoi = cls.deserialiser_tournoi(row)
+            liste_rounds = []
             liste_matchs = []
             for round in tournoi.rounds:
-                for row in round.match:
-                    test = [Joueur.deserialise_joueur(joueur) for joueur in row]
-                    liste_matchs.append(test)
-            round.match = ([liste_matchs])
+                liste_rounds.append(round)
+            for row in liste_rounds[-1].match:
+                joueurs = [Joueur.deserialise_joueur(joueur) for joueur in row]
+                liste_matchs.append(joueurs)
+            liste_rounds[-1].match = ([liste_matchs])
             print("liste de match = ", liste_matchs)
         return tournoi
 
@@ -104,6 +106,32 @@ class Tournoi():
             row["etat_tournoi"]
             self.table_tournoi.update({"etat_tournoi": "Fini"}, self.user.nom_du_tournoi == self.nom and self.user.
                                       lieu == self.lieu)
+
+    def test_sauvegarder_tournoi(self):
+        liste_rounds = []
+        liste_joueurs_serialise = []
+        liste_rounds_serialise = []
+        for row in self.joueurs:
+            for joueur in row:
+                joueur_serialise = joueur.serialiser_joueur()
+                liste_joueurs_serialise.append(joueur_serialise)
+        for round in self.rounds:
+            liste_rounds.append(round)
+        for round in liste_rounds:
+            round_serialise = round.test_serialiser_round()
+            liste_rounds_serialise.append(round_serialise)
+        serialise = {
+            "nom_du_tournoi": self.nom,
+            "lieu": self.lieu,
+            "date": self.date,
+            "nombre_de_tour": self.nb_tour,
+            "controle_du_temps": self.controle_du_temps,
+            "description": self.description,
+            "etat_tournoi": "en_cours",
+            "joueurs": liste_joueurs_serialise,
+            "rounds": liste_rounds_serialise
+        }
+        # self.table_tournoi.upsert(serialise, self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
 
 
 def main():

@@ -43,6 +43,33 @@ class ControleurTournoi:
         recup_infos = Tournoi.recuperer_infos_tournoi(self.table_tournoi, self.user, nom_tournoi, lieu_tournoi)
         return recup_infos
 
+    # def run_tournoi(self):
+    #     tournoi = self.controller_tournoi.creer_tournoi()
+    #     liste_joueurs = self.controller_joueur.ajouter_joueur(tournoi.nombre_joueur)
+    #     tournoi.enregistrer_joueur(liste_joueurs)
+    #     tournoi.sauvegarder_tournoi()
+    #     input("Appuyer sur 'Entrer' pour commencer le round")
+    #     round_1 = self.controller_round.creer_premier_round(tournoi.joueurs)
+    #     tournoi.enregistrer_round(round_1)
+    #     tournoi.sauvegarder_tournoi()
+    #     input("Appuyer sur 'Entrer' pour finir le round")
+    #     round_1.ajouter_date_fin_round()
+    #     tournoi.sauvegarder_tournoi()
+    #     self.controller_round.entrer_resultat_matchs(round_1.match)
+    #     round_1.cloturer_round()
+    #     tournoi.sauvegarder_tournoi()
+    #     for i in range(int(tournoi.nb_tour) - 1):
+    #         round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
+    #         tournoi.enregistrer_round(round_suivant)
+    #         tournoi.sauvegarder_tournoi()
+    #         input("Appuyer sur 'Entrer' pour finir le round")
+    #         round_suivant.ajouter_date_fin_round()
+    #         tournoi.sauvegarder_tournoi()
+    #         self.controller_round.entrer_resultat_matchs(round_suivant.match)
+    #         round_suivant.cloturer_round()
+    #         i += 1
+    #     tournoi.sauvegarder_tournoi()
+    #     tournoi.cloturer_tournoi()
 
 def main():
     pass

@@ -1,5 +1,6 @@
 from vues.vue_joueurs import VueJoueur
 from models.joueur import Joueur
+import utilitaires.menu as menu
 
 
 class ControllerJoueur:
@@ -69,6 +70,20 @@ class ControllerJoueur:
                     VueJoueur.message_erreur()
             except ValueError:
                 VueJoueur.message_erreur()
+
+    def gerer_joueurs(self):
+        while True:
+            menu_joueur = menu.Menu("Menu joueur", menu.option_joueur)
+            choix_joueur = menu_joueur.display()
+            if choix_joueur == "1":
+                self.creer_joueur()
+            elif choix_joueur == "2":
+                self.modifier_classement_joueur()
+            elif choix_joueur == "3":
+                print("Retour en arriere")
+                break
+            else:
+                print("Choix invalide !")
 
 
 def main():
