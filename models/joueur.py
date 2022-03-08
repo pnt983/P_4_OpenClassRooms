@@ -1,7 +1,7 @@
 
 
 class Joueur:
-    """Enregistrer les nouveaux joueurs ou charger ceux enregistrés dans la base de donnees"""
+    """ Crée les nouveaux joueurs"""
 
     def __init__(self, nom, prenom, date_naissance, sexe, classement, db_table_joueur, requete, score=0):
         self.nom = nom
@@ -10,6 +10,8 @@ class Joueur:
         self.sexe_joueur = sexe
         self.classement_joueur = classement
         self.score = score
+        self.deja_jouer = []
+        self.id = None
         self.table_joueur = db_table_joueur
         self.user = requete
 
@@ -40,14 +42,11 @@ class Joueur:
                         db_table_joueur=None, requete=None, score=score)
         return joueur
 
-    @classmethod
-    def test_deserialise(cls, document):
-        return cls(**document)
-
     def sauvegarder_joueur_dans_db(self):
         """Ajoute le joueur a 'table_joueur' de la db. Si il y est deja, il met a jour les infos données"""
         data = self.serialiser_joueur()
-        self.table_joueur.upsert(data, self.user.nom == self.nom and self.user.prenom == self.prenom)
+        self.id = self.table_joueur.upsert(data, self.user.nom == self.nom and self.user.prenom == self.prenom)
+        return self.id
 
 
 def main():

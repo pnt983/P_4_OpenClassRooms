@@ -20,7 +20,7 @@ class Menu:
 
     def display(self):
         while True:
-            print(Fore.BLUE + f"*************** {self.titre} ***************\n")
+            print(Fore.BLUE + f"\n*************** {self.titre} ***************\n")
             for option in self.options:
                 print(Fore.GREEN + option + "\n")
             choix_utilisateur = input(Fore.RED + "Entrer le numero de votre choix: ")

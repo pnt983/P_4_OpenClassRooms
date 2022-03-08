@@ -21,7 +21,7 @@ class ControllerJoueur:
         return joueur
 
     def ajouter_joueur(self, nombre_joueurs):
-        """Cree un nouveau joueur ou recupere dans la base de donnees pour l'envoyer au tournoi"""
+        """ Cree un nouveau joueur ou recupere dans la base de donnees. Retourne la listes des joueurs ajoutés"""
         liste_joueurs = []
         while True:
             for i in range(nombre_joueurs):
@@ -57,7 +57,7 @@ class ControllerJoueur:
             VueJoueur.message_erreur()
 
     def modifier_classement_joueur(self) -> str:
-        """L'utilisateur peut modifier le classement d'un joueur par son ID"""
+        """ L'utilisateur peut modifier le classement d'un joueur par son ID"""
         while True:
             try:
                 joueur_a_modifier = VueJoueur.modifier_classement(self.table)
@@ -72,6 +72,7 @@ class ControllerJoueur:
                 VueJoueur.message_erreur()
 
     def gerer_joueurs(self):
+        """ Gére la gestion des joueurs dans le menu principal"""
         while True:
             menu_joueur = menu.Menu("Menu joueur", menu.option_joueur)
             choix_joueur = menu_joueur.display()
