@@ -1,3 +1,4 @@
+from .match import Match
 import datetime
 from itertools import islice
 from operator import itemgetter
@@ -15,76 +16,43 @@ class Round:
         self.nom = nom
         self.match = matchs_round
 
-    def premieres_paires(self, liste_joueurs):
+    def creer_premieres_paires(self, liste_joueurs):
         """ Classe les joueurs par meilleur classement et divise la liste en deux pour les associer"""
         self.liste_des_matchs.clear()
         liste_a_classer = liste_joueurs
         liste_matchs = []
         separation_liste = len(liste_a_classer) / 2
         for premier, deuxieme in zip(liste_a_classer, islice(liste_a_classer, int(separation_liste), None)):
-            matchs = (premier, deuxieme)
+            matchs = Match(premier, deuxieme)
             liste_matchs.append(matchs)
-            premier.deja_jouer.append(deuxieme)
-            deuxieme.deja_jouer.append(premier)
+            premier.adversaire_deja_rencontrer.append(deuxieme)
+            deuxieme.adversaire_deja_rencontrer.append(premier)
         return liste_matchs
 
-    def generer_paires(self, liste_joueurs):   # Revoir pour si un match est en double
-        """ Cree des matchs par rapport au score des joueurs. Retourne la liste des matchs"""
-        liste_matchs = []
-        liste_premiere = []
-        liste_deuxieme = []
-        for p, d in zip(islice(liste_joueurs, 0, None, 2), islice(liste_joueurs, 1, None, 2)):
-            liste_premiere.append(p)
-            liste_deuxieme.append(d)
-        for i in range(len(liste_premiere)):
-            for premier, deuxieme in zip(liste_premiere, liste_deuxieme):
-                if deuxieme in premier.deja_jouer:
-                    if len(liste_deuxieme) == 1:
-                        matchs = (liste_premiere[0], liste_deuxieme[0])
-                        liste_matchs.append(matchs)
-                        premier.deja_jouer.append(liste_deuxieme[0])
-                        deuxieme.deja_jouer.append(liste_premiere[0])
-                        liste_premiere.pop(0)
-                        liste_deuxieme.pop(0)
-                        i += 1
-                    else:
-                        match = (liste_premiere[0], liste_deuxieme[1])
-                        liste_matchs.append(match)
-                        premier.deja_jouer.append(liste_deuxieme[1])
-                        deuxieme.deja_jouer.append(liste_premiere[0])
-                        liste_premiere.pop(0)
-                        liste_deuxieme.pop(1)
-                        i += 1
-                else:
-                    matchs = (liste_premiere[0], liste_deuxieme[0])
-                    liste_matchs.append(matchs)
-                    premier.deja_jouer.append(liste_deuxieme[0])
-                    deuxieme.deja_jouer.append(liste_premiere[0])
-                    liste_premiere.pop(0)
-                    liste_deuxieme.pop(0)
-                    i += 1
-        return liste_matchs
+    def generer_paires(self, liste_joueurs):
+        """Return next round of match between players"""
+        joueurs = liste_joueurs
+        matches: list[Match] = []
+
+        while len(joueurs) > 0:
+            p1 = joueurs[0]
+            for adversaire in joueurs[1:]:
+                if adversaire not in p1.adversaire_deja_rencontrer:
+                    p1.adversaire_deja_rencontrer.append(adversaire)
+                    adversaire.adversaire_deja_rencontrer.append(p1)
+                    match = Match(p1, adversaire)
+                    matches.append(match)
+                    joueurs.remove(p1)
+                    joueurs.remove(adversaire)
+                    break     # sorti de la boucle quand un adversaire a été trouvé
+        return matches
 
     def serialiser_round(self):
         liste_matchs_serialise = []
         for row in self.match:
-            for i in row:
-                joueur_serialise = [joueur.serialiser_joueur() for joueur in i]
-                liste_matchs_serialise.append(joueur_serialise)
-        serialise = {
-            "nom_round": self.nom,
-            "date_debut_round": self.date,
-            "date_fin_round": self.date_fin,
-            "etat_round": self.etat_round,
-            "matchs_round": liste_matchs_serialise
-        }
-        return serialise
-
-    def serialiser_round_apres_reprise(self):
-        liste_matchs_serialise = []
-        for row in self.match[-1]:
-            joueur_serialise = [joueur.serialiser_joueur() for joueur in row]
-            liste_matchs_serialise.append(joueur_serialise)
+            for match in row:
+                match_serialise = match.serialiser_match()
+                liste_matchs_serialise.append(match_serialise)
         serialise = {
             "nom_round": self.nom,
             "date_debut_round": self.date,

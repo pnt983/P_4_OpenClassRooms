@@ -20,17 +20,14 @@ class ControllerApp:
         self.controller_round = ControllerRound()
         self.controller_rapport = ControllerRapport(TABLE_JOUEUR, TABLE_TOURNOI, USER)
 
-    def test(self):
-        self.controller_tournoi.reprendre_tournoi()
-
-    def menu_principal(self):
+    def afficher_menu_principal(self):
         while True:
             menu_general = menu.Menu("Menu principal", menu.option_principale)
-            choix_principal = menu_general.display()
+            choix_principal = menu_general.afficher()
             if choix_principal == "1":
                 while True:
                     menu_tournoi = menu.Menu("Menu tournoi", menu.option_tournoi)
-                    choix_tournoi = menu_tournoi.display()
+                    choix_tournoi = menu_tournoi.afficher()
                     if choix_tournoi == "1":
                         self.controller_tournoi.commencer_tournoi()
                     elif choix_tournoi == "2":

@@ -10,7 +10,7 @@ class Joueur:
         self.sexe_joueur = sexe
         self.classement_joueur = classement
         self.score = score
-        self.deja_jouer = []
+        self.adversaire_deja_rencontrer = []
         self.id = None
         self.table_joueur = db_table_joueur
         self.user = requete
@@ -31,7 +31,7 @@ class Joueur:
         return serialise
 
     @classmethod
-    def deserialise_joueur(cls, info_joueur):
+    def deserialiser_joueur(cls, info_joueur):
         nom = info_joueur["nom"]
         prenom = info_joueur["prenom"]
         date_naissance = info_joueur["naissance"]

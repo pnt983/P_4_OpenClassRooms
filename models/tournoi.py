@@ -1,4 +1,6 @@
 import datetime
+
+from models.match import Match
 from .round import Round
 from models.joueur import Joueur
 
@@ -40,7 +42,7 @@ class Tournoi():
         nb_tour = info_tournoi["nombre_de_tour"]
         controle_temps = info_tournoi["controle_du_temps"]
         description = info_tournoi["description"]
-        liste_joueurs = [Joueur.deserialise_joueur(joueur) for joueur in info_tournoi["joueurs"]]
+        liste_joueurs = [Joueur.deserialiser_joueur(joueur) for joueur in info_tournoi["joueurs"]]
         liste_rounds = [Round.deserialiser_round(round) for round in info_tournoi["rounds"]]
         tournoi = Tournoi(nom, lieu, description, nb_tour, controle_temps, liste_joueurs, liste_rounds)
         return tournoi
@@ -90,13 +92,21 @@ class Tournoi():
             tournoi = cls.deserialiser_tournoi(row)
             liste_rounds = []
             liste_matchs = []
+            liste_joueurs_deserialise = []
             for round in tournoi.rounds:
                 liste_rounds.append(round)
             for row in liste_rounds[-1].match:
-                joueurs = [Joueur.deserialise_joueur(joueur) for joueur in row]
-                liste_matchs.append(joueurs)
+                for joueur in row:
+                    joueur_deserialise = Joueur.deserialiser_joueur(joueur)
+                    liste_joueurs_deserialise.append(joueur_deserialise)
+            while len(liste_joueurs_deserialise) > 0:
+                joueur_1 = liste_joueurs_deserialise[0]
+                joueur_2 = liste_joueurs_deserialise[1]
+                match = Match(joueur_1, joueur_2)
+                liste_matchs.append(match)
+                liste_joueurs_deserialise.remove(joueur_1)
+                liste_joueurs_deserialise.remove(joueur_2)
             liste_rounds[-1].match = ([liste_matchs])
-            print("liste de match = ", liste_matchs)
         return tournoi
 
     def cloturer_tournoi(self):
@@ -116,7 +126,7 @@ class Tournoi():
                 liste_joueurs_serialise.append(joueur_serialise)
         for row in self.rounds:
             liste_rounds.append(row)
-        round_serialise = liste_rounds[-1].serialiser_round_apres_reprise()
+        round_serialise = liste_rounds[-1].serialiser_round()
         liste_rounds_serialise.append(round_serialise)
         serialise = {
             "nom_du_tournoi": self.nom,

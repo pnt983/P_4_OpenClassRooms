@@ -25,7 +25,7 @@ class ControllerRapport:
             VueRapport.montrer_message(liste_classement)
             return liste_classement
         else:
-            VueRapport.message_erreur()
+            VueRapport.afficher_message_erreur()
 
     def afficher_joueurs_tournoi(self):
         """Affiche les joueurs d'un tournoi par ordre alphabetique ou par classement"""
@@ -49,7 +49,7 @@ class ControllerRapport:
                 VueRapport.montrer_message(liste_classement)
                 return liste_classement
             else:
-                VueRapport.message_erreur()
+                VueRapport.afficher_message_erreur()
 
     def afficher_tous_les_tournois(self):
         self.rapport = Rapport(self.table_joueur, self.table_tournoi, self.query)
@@ -87,7 +87,7 @@ class ControllerRapport:
         """ Gére la gestion des rapports dans le menu principal"""
         while True:
             menu_rapport = menu.Menu("Menu rapport", menu.option_rapport)
-            choix_rapport = menu_rapport.display()
+            choix_rapport = menu_rapport.afficher()
             if choix_rapport == "1":
                 self.afficher_rapport_acteurs()
             elif choix_rapport == "2":

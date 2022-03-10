@@ -208,11 +208,10 @@ class Verification:
             while True:
                 try:
                     choix_nombre_joueurs = fonction(*args, **kwargs)
-                    if (int(choix_nombre_joueurs) % 2) == 0:
-                        if not choix_nombre_joueurs:
-                            return 8
-                        else:
-                            return int(choix_nombre_joueurs)
+                    if not choix_nombre_joueurs:
+                        return 8
+                    elif (int(choix_nombre_joueurs) % 2) == 0:
+                        return int(choix_nombre_joueurs)
                     else:
                         print("Entrer uniquement un chiffre pair")
                 except ValueError:

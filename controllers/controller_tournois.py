@@ -24,8 +24,8 @@ class ControleurTournoi:
         self.tournoi = Tournoi(nom=VueTournoi.creer_nom_tournoi(),
                                lieu=VueTournoi.creer_lieu_tournoi(),
                                description=VueTournoi.creer_description_tournoi(),
-                               nb_tour=VueTournoi.nombre_tours_tournoi(),
-                               controle_du_temps=VueTournoi.controle_temps(),
+                               nb_tour=VueTournoi.choisir_nombre_tours_tournoi(),
+                               controle_du_temps=VueTournoi.choisir_controle_temps(),
                                db_table_tournoi=self.table_tournoi,
                                query=self.user,
                                nombre_joueur=VueTournoi.choisir_nombre_joueurs())
@@ -47,11 +47,14 @@ class ControleurTournoi:
         return liste_tournois_encours
 
     def reprendre_tournoi(self):
-        self.afficher_tournoi_en_cours()
-        nom_tournoi = VueTournoi.rechercher_nom_tournoi()
-        lieu_tournoi = VueTournoi.rechercher_lieu_tournoi()
-        recup_infos = Tournoi.recuperer_infos_tournoi(self.table_tournoi, self.user, nom_tournoi, lieu_tournoi)
-        return recup_infos
+        liste_tournois_encours = self.afficher_tournoi_en_cours()
+        if len(liste_tournois_encours) == 0:
+            return 0
+        else:
+            nom_tournoi = VueTournoi.rechercher_nom_tournoi()
+            lieu_tournoi = VueTournoi.rechercher_lieu_tournoi()
+            recup_infos = Tournoi.recuperer_infos_tournoi(self.table_tournoi, self.user, nom_tournoi, lieu_tournoi)
+            return recup_infos
 
     def commencer_tournoi(self):
         """ Début du tournoi dans le menu principal"""
@@ -72,8 +75,6 @@ class ControleurTournoi:
         for i in range(int(tournoi.nb_tour) - 1):
             round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
             tournoi.enregistrer_round(round_suivant)
-            for row in liste_joueurs:      # A enlever
-                print(row, "row dans liste de joueur 'menu principal'", row.deja_jouer)   # A enlever
             tournoi.sauvegarder_tournoi()
             input("Appuyer sur 'Entrer' pour finir le round")
             round_suivant.ajouter_date_fin_round()
@@ -85,46 +86,50 @@ class ControleurTournoi:
         tournoi.cloturer_tournoi()
 
     def reprise_tournoi(self):
-        """ Reprend un tournoi enregistré dans le menu principal"""
+        """Reprend un tournoi enregistré dans le menu principal"""
         tournoi = self.reprendre_tournoi()
-        tournoi.table_tournoi = self.table_tournoi
-        tournoi.user = self.user
-        liste_rounds = []
-        for round in tournoi.rounds:
-            liste_rounds.append(round)
-        if liste_rounds[-1].etat_round == "En_cours":
-            round = liste_rounds[-1]
-            print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu} au tour n°{len(liste_rounds)}")
-            tournoi.joueurs = [tournoi.joueurs]
-            round.ajouter_date_fin_round()
-            self.controller_round.entrer_resultat_matchs(round.match)
-            round.cloturer_round()
-            tournoi.sauvegarder_apres_reprise()
-            for i in range(int(tournoi.nb_tour) - len(liste_rounds)):
-                round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
-                tournoi.enregistrer_round(round_suivant)
-                input("Appuyer sur 'Entrer' pour finir le round")
-                round_suivant.ajouter_date_fin_round()
-                self.controller_round.entrer_resultat_matchs(round_suivant.match)
-                round_suivant.cloturer_round()
-                i += 1
-            tournoi.sauvegarder_apres_reprise()
-            tournoi.cloturer_tournoi()
+        if tournoi == 0:
+            message = print("Aucun tournoi en cours")
+            return message
         else:
-            round = liste_rounds[-1]
-            print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu}. Le tour précédent etait \
-le tour n°{len(liste_rounds)}")
-            tournoi.joueurs = [tournoi.joueurs]
-            for i in range(int(tournoi.nb_tour) - len(liste_rounds)):
-                round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
-                tournoi.enregistrer_round(round_suivant)
-                input("Appuyer sur 'Entrer' pour finir le round")
-                round_suivant.ajouter_date_fin_round()
-                self.controller_round.entrer_resultat_matchs(round_suivant.match)
-                round_suivant.cloturer_round()
-                i += 1
-            tournoi.sauvegarder_apres_reprise()
-            tournoi.cloturer_tournoi()
+            tournoi.table_tournoi = self.table_tournoi
+            tournoi.user = self.user
+            liste_rounds = []
+            for round in tournoi.rounds:
+                liste_rounds.append(round)
+            if liste_rounds[-1].etat_round == "En_cours":
+                round = liste_rounds[-1]
+                print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu} au tour n°{len(liste_rounds)}")
+                tournoi.joueurs = [tournoi.joueurs]
+                round.ajouter_date_fin_round()
+                self.controller_round.entrer_resultat_matchs(round.match)
+                round.cloturer_round()
+                tournoi.sauvegarder_apres_reprise()
+                for i in range(int(tournoi.nb_tour) - len(liste_rounds)):
+                    round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
+                    tournoi.enregistrer_round(round_suivant)
+                    input("Appuyer sur 'Entrer' pour finir le round")
+                    round_suivant.ajouter_date_fin_round()
+                    self.controller_round.entrer_resultat_matchs(round_suivant.match)
+                    round_suivant.cloturer_round()
+                    i += 1
+                tournoi.sauvegarder_apres_reprise()
+                tournoi.cloturer_tournoi()
+            else:
+                round = liste_rounds[-1]
+                print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu}. Le tour précédent etait \
+    le tour n°{len(liste_rounds)}")
+                tournoi.joueurs = [tournoi.joueurs]
+                for i in range(int(tournoi.nb_tour) - len(liste_rounds)):
+                    round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
+                    tournoi.enregistrer_round(round_suivant)
+                    input("Appuyer sur 'Entrer' pour finir le round")
+                    round_suivant.ajouter_date_fin_round()
+                    self.controller_round.entrer_resultat_matchs(round_suivant.match)
+                    round_suivant.cloturer_round()
+                    i += 1
+                tournoi.sauvegarder_apres_reprise()
+                tournoi.cloturer_tournoi()
 
 
 def main():

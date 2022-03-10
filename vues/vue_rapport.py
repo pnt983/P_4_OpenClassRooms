@@ -24,8 +24,9 @@ entrer 2 pour avoir le rapport par classement: "))
 
     @classmethod
     def montrer_message(cls, message):
-        print(message)
+        for row in message:
+            print(row)
 
     @classmethod
-    def message_erreur(cls):
+    def afficher_message_erreur(cls):
         print("Le choix incorrect")

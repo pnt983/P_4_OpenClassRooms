@@ -27,24 +27,24 @@ class ControllerJoueur:
             for i in range(nombre_joueurs):
                 choix = {1: "Creer nouveau joueur", 2: "Choisir joueur dans la base de donnee"}
                 try:
-                    choix_utilisateur = VueJoueur.choix_ajouter_joueur()
+                    choix_utilisateur = VueJoueur.choisir_ajouter_joueur()
                     if choix_utilisateur in choix:
                         if choix_utilisateur == 1:
                             joueur = self.creer_joueur()
                             liste_joueurs.append(joueur)
                             i += 1
                         elif choix_utilisateur == 2:
-                            choix = VueJoueur.choix_par_id(self.table)
+                            choix = VueJoueur.choisir_par_id(self.table)
                             joueur_recuperer = self.recuperer_joueur_db(choix)
-                            joueur = Joueur.deserialise_joueur(joueur_recuperer)
+                            joueur = Joueur.deserialiser_joueur(joueur_recuperer)
                             liste_joueurs.append(joueur)
                             i += 1
                         else:
-                            VueJoueur.message_erreur()
+                            VueJoueur.afficher_message_erreur()
                     else:
-                        VueJoueur.message_erreur()
+                        VueJoueur.afficher_message_erreur()
                 except ValueError:
-                    VueJoueur.message_erreur()
+                    VueJoueur.afficher_message_erreur()
             return liste_joueurs
 
     def recuperer_joueur_db(self, choix):
@@ -54,7 +54,7 @@ class ControllerJoueur:
             VueJoueur.afficher_message(id)
             return id
         else:
-            VueJoueur.message_erreur()
+            VueJoueur.afficher_message_erreur()
 
     def modifier_classement_joueur(self) -> str:
         """ L'utilisateur peut modifier le classement d'un joueur par son ID"""
@@ -63,19 +63,19 @@ class ControllerJoueur:
                 joueur_a_modifier = VueJoueur.modifier_classement(self.table)
                 joueur_trouve = self.table.get(doc_id=joueur_a_modifier)
                 if joueur_trouve is not None:
-                    nouveau_classement = VueJoueur.nouveau_classement()
+                    nouveau_classement = VueJoueur.entrer_nouveau_classement()
                     self.table.update({"classement": nouveau_classement}, doc_ids=[joueur_a_modifier])
                     return joueur_trouve
                 else:
-                    VueJoueur.message_erreur()
+                    VueJoueur.afficher_message_erreur()
             except ValueError:
-                VueJoueur.message_erreur()
+                VueJoueur.afficher_message_erreur()
 
     def gerer_joueurs(self):
         """ Gére la gestion des joueurs dans le menu principal"""
         while True:
             menu_joueur = menu.Menu("Menu joueur", menu.option_joueur)
-            choix_joueur = menu_joueur.display()
+            choix_joueur = menu_joueur.afficher()
             if choix_joueur == "1":
                 self.creer_joueur()
             elif choix_joueur == "2":

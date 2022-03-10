@@ -41,15 +41,11 @@ class VueJoueur:
 
     @classmethod
     @Verification.verifier_classement
-    def nouveau_classement(cls) -> int:
+    def entrer_nouveau_classement(cls) -> int:
         return int(input("Entrer le nouveau classement du joueur: "))
 
-    # def indice_joueur(self):
-    #     for row in database.TABLE_JOUEUR:
-    #         print(f"ID joueur: {row.doc_id} {row}")
-
     @classmethod
-    def message_erreur(cls):
+    def afficher_message_erreur(cls):
         print("Le choix est incorrect")
 
     @classmethod
@@ -57,12 +53,12 @@ class VueJoueur:
         print(message)
 
     @classmethod
-    def choix_ajouter_joueur(cls):
+    def choisir_ajouter_joueur(cls):
         return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
 
     @classmethod
     @Verification.verifier_doc_id
-    def choix_par_id(cls, table_joueur):
+    def choisir_par_id(cls, table_joueur):
         for row in table_joueur:
             print(f"ID joueur: {row.doc_id} {row}")
         return int(input("Entrer l'id du joueur: "))
