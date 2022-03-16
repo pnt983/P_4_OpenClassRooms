@@ -59,8 +59,9 @@ class VueJoueur:
     @classmethod
     @Verification.verifier_doc_id
     def choisir_par_id(cls, table_joueur):
-        for row in table_joueur:
-            print(f"ID joueur: {row.doc_id} {row}")
+        for joueur in table_joueur:
+            print(f"ID joueur: {joueur.doc_id} {joueur['nom']}, {joueur['prenom']}, {joueur['naissance']}, \
+{joueur['classement']}")
         return int(input("Entrer l'id du joueur: "))
 
 

@@ -1,6 +1,6 @@
 import datetime
 
-from models.match import Match
+from models.match import Match, JoueurScore
 from .round import Round
 from models.joueur import Joueur
 
@@ -85,28 +85,19 @@ class Tournoi():
         self.table_tournoi.upsert(serialise, self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
 
     @classmethod
-    def recuperer_infos_tournoi(cls, table, user, nom_tournoi, lieu_tournoi):
+    def recuperer_infos_tournoi(cls, table, table_joueur, user, nom_tournoi, lieu_tournoi):
         table_tournoi = table.search(user.nom_du_tournoi == nom_tournoi and user.
                                      lieu == lieu_tournoi)
         for row in table_tournoi:
             tournoi = cls.deserialiser_tournoi(row)
             liste_rounds = []
             liste_matchs = []
-            liste_joueurs_deserialise = []
             for round in tournoi.rounds:
                 liste_rounds.append(round)
-            for row in liste_rounds[-1].match:
-                for joueur in row:
-                    joueur_deserialise = Joueur.deserialiser_joueur(joueur)
-                    liste_joueurs_deserialise.append(joueur_deserialise)
-            while len(liste_joueurs_deserialise) > 0:
-                joueur_1 = liste_joueurs_deserialise[0]
-                joueur_2 = liste_joueurs_deserialise[1]
-                match = Match(joueur_1, joueur_2)
-                liste_matchs.append(match)
-                liste_joueurs_deserialise.remove(joueur_1)
-                liste_joueurs_deserialise.remove(joueur_2)
-            liste_rounds[-1].match = ([liste_matchs])
+            for match in liste_rounds[-1].matchs:
+                match_deserialise = Match.deserialiser_match(match, table_joueur)
+                liste_matchs.append(match_deserialise)
+                liste_rounds[-1].matchs = (liste_matchs)
         return tournoi
 
     def cloturer_tournoi(self):

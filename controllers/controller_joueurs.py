@@ -17,7 +17,8 @@ class ControllerJoueur:
                         VueJoueur.creer_sexe_joueur(),
                         VueJoueur.creer_classement_joueur(),
                         self.table, self.user)
-        joueur.sauvegarder_joueur_dans_db()
+        id_joueur = joueur.sauvegarder_joueur_dans_db()
+        joueur.id = id_joueur
         return joueur
 
     def ajouter_joueur(self, nombre_joueurs):
@@ -37,6 +38,7 @@ class ControllerJoueur:
                             choix = VueJoueur.choisir_par_id(self.table)
                             joueur_recuperer = self.recuperer_joueur_db(choix)
                             joueur = Joueur.deserialiser_joueur(joueur_recuperer)
+                            joueur.id = choix
                             liste_joueurs.append(joueur)
                             i += 1
                         else:

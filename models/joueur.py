@@ -3,14 +3,15 @@
 class Joueur:
     """ Crée les nouveaux joueurs"""
 
-    def __init__(self, nom, prenom, date_naissance, sexe, classement, db_table_joueur, requete, score=0):
+    def __init__(self, nom, prenom, date_naissance, sexe, classement, db_table_joueur, requete, score=0,
+                 adversaire_deja_rencontrer=[]):
         self.nom = nom
         self.prenom = prenom
         self.date_de_naissance = date_naissance
         self.sexe_joueur = sexe
         self.classement_joueur = classement
         self.score = score
-        self.adversaire_deja_rencontrer = []
+        self.adversaire_deja_rencontrer = adversaire_deja_rencontrer
         self.id = None
         self.table_joueur = db_table_joueur
         self.user = requete
@@ -26,7 +27,8 @@ class Joueur:
             "naissance": self.date_de_naissance,
             "sexe": self.sexe_joueur,
             "classement": self.classement_joueur,
-            "score": self.score
+            "score": self.score,
+            "adversaire_deja_rencontrer": self.adversaire_deja_rencontrer
         }
         return serialise
 
@@ -38,8 +40,10 @@ class Joueur:
         sexe = info_joueur["sexe"]
         classement = info_joueur["classement"]
         score = info_joueur["score"]
+        adversaire_deja_rencontrer = info_joueur["adversaire_deja_rencontrer"]
         joueur = Joueur(nom=nom, prenom=prenom, date_naissance=date_naissance, sexe=sexe, classement=classement,
-                        db_table_joueur=None, requete=None, score=score)
+                        db_table_joueur=None, requete=None, score=score,
+                        adversaire_deja_rencontrer=adversaire_deja_rencontrer)
         return joueur
 
     def sauvegarder_joueur_dans_db(self):

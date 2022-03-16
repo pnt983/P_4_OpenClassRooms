@@ -53,7 +53,8 @@ class ControleurTournoi:
         else:
             nom_tournoi = VueTournoi.rechercher_nom_tournoi()
             lieu_tournoi = VueTournoi.rechercher_lieu_tournoi()
-            recup_infos = Tournoi.recuperer_infos_tournoi(self.table_tournoi, self.user, nom_tournoi, lieu_tournoi)
+            recup_infos = Tournoi.recuperer_infos_tournoi(self.table_tournoi, TABLE_JOUEUR, self.user,
+                                                          nom_tournoi, lieu_tournoi)
             return recup_infos
 
     def commencer_tournoi(self):
@@ -69,7 +70,7 @@ class ControleurTournoi:
         input("Appuyer sur 'Entrer' pour finir le round")
         round_1.ajouter_date_fin_round()
         tournoi.sauvegarder_tournoi()
-        self.controller_round.entrer_resultat_matchs(round_1.match)
+        self.controller_round.entrer_resultat_matchs(round_1.matchs)
         round_1.cloturer_round()
         tournoi.sauvegarder_tournoi()
         for i in range(int(tournoi.nb_tour) - 1):
@@ -79,7 +80,7 @@ class ControleurTournoi:
             input("Appuyer sur 'Entrer' pour finir le round")
             round_suivant.ajouter_date_fin_round()
             tournoi.sauvegarder_tournoi()
-            self.controller_round.entrer_resultat_matchs(round_suivant.match)
+            self.controller_round.entrer_resultat_matchs(round_suivant.matchs)
             round_suivant.cloturer_round()
             i += 1
         tournoi.sauvegarder_tournoi()
@@ -102,7 +103,9 @@ class ControleurTournoi:
                 print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu} au tour n°{len(liste_rounds)}")
                 tournoi.joueurs = [tournoi.joueurs]
                 round.ajouter_date_fin_round()
-                self.controller_round.entrer_resultat_matchs(round.match)
+                self.controller_round.entrer_resultat_matchs(round.matchs)
+                for match in round.matchs:
+                    match.ajouter_joueur_deja_rencontre()
                 round.cloturer_round()
                 tournoi.sauvegarder_apres_reprise()
                 for i in range(int(tournoi.nb_tour) - len(liste_rounds)):
@@ -110,7 +113,7 @@ class ControleurTournoi:
                     tournoi.enregistrer_round(round_suivant)
                     input("Appuyer sur 'Entrer' pour finir le round")
                     round_suivant.ajouter_date_fin_round()
-                    self.controller_round.entrer_resultat_matchs(round_suivant.match)
+                    self.controller_round.entrer_resultat_matchs(round_suivant.matchs)
                     round_suivant.cloturer_round()
                     i += 1
                 tournoi.sauvegarder_apres_reprise()
@@ -125,7 +128,7 @@ class ControleurTournoi:
                     tournoi.enregistrer_round(round_suivant)
                     input("Appuyer sur 'Entrer' pour finir le round")
                     round_suivant.ajouter_date_fin_round()
-                    self.controller_round.entrer_resultat_matchs(round_suivant.match)
+                    self.controller_round.entrer_resultat_matchs(round_suivant.matchs)
                     round_suivant.cloturer_round()
                     i += 1
                 tournoi.sauvegarder_apres_reprise()
