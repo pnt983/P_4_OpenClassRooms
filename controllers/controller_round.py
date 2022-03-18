@@ -11,7 +11,6 @@ class ControllerRound:
         self.round = Round(VueRound.creer_nom_round())
         joueurs = self.round.classer_par_classement(liste_joueurs)
         self.round.creer_premieres_paires(joueurs)
-        # self.round.match.append(matchs)
         self.round.liste_des_matchs.extend([self.round.nom, self.round.matchs])
         VueRound.afficher_les_matchs(self.round.matchs)
         VueRound.afficher_debut_round(self.round.nom, self.round.date)
@@ -21,8 +20,6 @@ class ControllerRound:
         self.round = Round(VueRound.creer_nom_round())
         joueurs = self.round.classer_par_score(liste_joueurs)
         self.round.generer_paires(joueurs)
-        # self.round.match.clear()
-        # self.round.match.append(matchs)
         self.round.liste_des_matchs.extend([self.round.nom, self.round.matchs])
         VueRound.afficher_les_matchs(self.round.matchs)
         VueRound.afficher_debut_round(self.round.nom, self.round.date)
@@ -44,3 +41,10 @@ class ControllerRound:
                 match.joueur_score_1.joueur.score += 0.5
                 match.joueur_score_2._score += 0.5
                 match.joueur_score_2.joueur.score += 0.5
+
+    def creer_rounds_reprise(self, round: Round, liste_joueurs):
+        self.round = round
+        joueurs = self.round.classer_par_score(liste_joueurs)
+        self.round.generer_paires(joueurs)
+        VueRound.afficher_les_matchs(self.round.matchs)
+        return self.round

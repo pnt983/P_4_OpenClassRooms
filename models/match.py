@@ -16,6 +16,14 @@ class JoueurScore:
         joueur_serialise = self.joueur.serialiser_joueur()
         return joueur_serialise
 
+    @classmethod
+    def deserialiser_joueur_score(cls, match, liste_joueurs):
+        test = match[0]
+        for row in liste_joueurs:
+            if test == row.id:
+                joueur_score = JoueurScore(row, match[1])
+                return joueur_score
+
     @property
     def ajouter_score(self):
         return self._score
@@ -47,15 +55,21 @@ class Match:
         return serialise
 
     @classmethod
-    def deserialiser_match(cls, info_match, table_joueur):
-        liste_joueurs = []
-        for row in info_match["Matchs"]:
-            id_joueur = row[0]
-            joueur = table_joueur.get(doc_id=id_joueur)
-            objet_joueur = Joueur.deserialiser_joueur(joueur)
-            liste_joueurs.append(objet_joueur)
-        match = Match(JoueurScore(liste_joueurs[0]), JoueurScore(liste_joueurs[1]))
-        return match
+    def deserialiser_match(cls, info_match, liste_joueurs):
+        liste_joueurs_score = []
+        liste_deserialiser_joueurs_score = []
+        for match in info_match["Matchs"]:
+            joueur_score = JoueurScore.deserialiser_joueur_score(match, liste_joueurs)
+            liste_joueurs_score.append(joueur_score)
+        for joueur in liste_joueurs_score:
+            liste_deserialiser_joueurs_score.append(joueur)
+        while len(liste_deserialiser_joueurs_score) > 0:
+            joueur_1 = liste_deserialiser_joueurs_score[0]
+            joueur_2 = liste_deserialiser_joueurs_score[1]
+            objet_match = Match(joueur_1, joueur_2)
+            liste_deserialiser_joueurs_score.remove(joueur_1)
+            liste_deserialiser_joueurs_score.remove(joueur_2)
+            return objet_match
 
     def ajouter_joueur_deja_rencontre(self):
         joueur_1 = self.joueur_score_1.joueur

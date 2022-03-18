@@ -19,6 +19,7 @@ class ControllerJoueur:
                         self.table, self.user)
         id_joueur = joueur.sauvegarder_joueur_dans_db()
         joueur.id = id_joueur
+        joueur.sauvegarder_joueur_dans_db()
         return joueur
 
     def ajouter_joueur(self, nombre_joueurs):

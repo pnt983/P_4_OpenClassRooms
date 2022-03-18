@@ -43,7 +43,7 @@ class Tournoi():
         controle_temps = info_tournoi["controle_du_temps"]
         description = info_tournoi["description"]
         liste_joueurs = [Joueur.deserialiser_joueur(joueur) for joueur in info_tournoi["joueurs"]]
-        liste_rounds = [Round.deserialiser_round(round) for round in info_tournoi["rounds"]]
+        liste_rounds = [Round.deserialiser_round(round, liste_joueurs) for round in info_tournoi["rounds"]]
         tournoi = Tournoi(nom, lieu, description, nb_tour, controle_temps, liste_joueurs, liste_rounds)
         return tournoi
 
@@ -91,13 +91,13 @@ class Tournoi():
         for row in table_tournoi:
             tournoi = cls.deserialiser_tournoi(row)
             liste_rounds = []
-            liste_matchs = []
+            # liste_matchs = []
             for round in tournoi.rounds:
                 liste_rounds.append(round)
-            for match in liste_rounds[-1].matchs:
-                match_deserialise = Match.deserialiser_match(match, table_joueur)
-                liste_matchs.append(match_deserialise)
-                liste_rounds[-1].matchs = (liste_matchs)
+            # for match in liste_rounds[-1].matchs:
+            #     match_deserialise = Match.deserialiser_match(match, table_joueur)
+            #     liste_matchs.append(match_deserialise)
+            #     liste_rounds[-1].matchs = (liste_matchs)
         return tournoi
 
     def cloturer_tournoi(self):

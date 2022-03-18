@@ -61,12 +61,12 @@ class Round:
         return serialise
 
     @classmethod
-    def deserialiser_round(cls, infos_round):
+    def deserialiser_round(cls, infos_round, liste_joueurs):
         nom = infos_round["nom_round"]
         date_debut_round = infos_round["date_debut_round"]
         date_fin_round = infos_round["date_fin_round"]
         etat_round = infos_round["etat_round"]
-        matchs_round = infos_round["matchs_round"]
+        matchs_round = [Match.deserialiser_match(match, liste_joueurs) for match in infos_round["matchs_round"]]
         objet_round = Round(nom, date_debut_round, date_fin_round, etat_round, matchs_round)
         return objet_round
 
