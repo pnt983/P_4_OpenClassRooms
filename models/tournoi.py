@@ -1,6 +1,5 @@
 import datetime
 
-from models.match import Match, JoueurScore
 from .round import Round
 from models.joueur import Joueur
 
@@ -85,19 +84,13 @@ class Tournoi():
         self.table_tournoi.upsert(serialise, self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
 
     @classmethod
-    def recuperer_infos_tournoi(cls, table, table_joueur, user, nom_tournoi, lieu_tournoi):
-        table_tournoi = table.search(user.nom_du_tournoi == nom_tournoi and user.
-                                     lieu == lieu_tournoi)
+    def recuperer_infos_tournoi(cls, table, user, nom_tournoi, lieu_tournoi):
+        table_tournoi = table.search(user.nom_du_tournoi == nom_tournoi and user.lieu == lieu_tournoi)
         for row in table_tournoi:
             tournoi = cls.deserialiser_tournoi(row)
             liste_rounds = []
-            # liste_matchs = []
             for round in tournoi.rounds:
                 liste_rounds.append(round)
-            # for match in liste_rounds[-1].matchs:
-            #     match_deserialise = Match.deserialiser_match(match, table_joueur)
-            #     liste_matchs.append(match_deserialise)
-            #     liste_rounds[-1].matchs = (liste_matchs)
         return tournoi
 
     def cloturer_tournoi(self):
@@ -108,17 +101,18 @@ class Tournoi():
                                       lieu == self.lieu)
 
     def sauvegarder_apres_reprise(self):
-        liste_rounds = []
         liste_joueurs_serialise = []
         liste_rounds_serialise = []
         for row in self.joueurs:
             for joueur in row:
-                joueur_serialise = joueur.serialiser_joueur()
-                liste_joueurs_serialise.append(joueur_serialise)
+                for element in joueur.adversaire_deja_rencontrer:
+                    if type(element) is not int:
+                        joueur.adversaire_deja_rencontrer.pop(-1)
+            joueur_serialise = joueur.serialiser_joueur()
+            liste_joueurs_serialise.append(joueur_serialise)
         for row in self.rounds:
-            liste_rounds.append(row)
-        round_serialise = liste_rounds[-1].serialiser_round()
-        liste_rounds_serialise.append(round_serialise)
+            round_serialise = row.serialiser_round()
+            liste_rounds_serialise.append(round_serialise)
         serialise = {
             "nom_du_tournoi": self.nom,
             "lieu": self.lieu,
@@ -130,7 +124,7 @@ class Tournoi():
             "joueurs": liste_joueurs_serialise,
             "rounds": liste_rounds_serialise
         }
-        self.table_tournoi.upsert(serialise, self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
+        self.table_tournoi.update(serialise, self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
 
 
 def main():

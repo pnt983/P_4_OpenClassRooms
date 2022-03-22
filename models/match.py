@@ -18,9 +18,9 @@ class JoueurScore:
 
     @classmethod
     def deserialiser_joueur_score(cls, match, liste_joueurs):
-        test = match[0]
+        joueur = match[0]
         for row in liste_joueurs:
-            if test == row.id:
+            if joueur == row.id:
                 joueur_score = JoueurScore(row, match[1])
                 return joueur_score
 

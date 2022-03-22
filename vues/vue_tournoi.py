@@ -50,6 +50,10 @@ directement sur entrée: ")
     def afficher_message(cls, message):
         print(message)
 
+    @classmethod
+    def valider_fin_round(cls):
+        return input("Appuyer sur 'Entrer' pour finir le round")
+
 
 def main():
     pass

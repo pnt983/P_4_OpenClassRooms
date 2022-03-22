@@ -57,21 +57,46 @@ class Rapport:
             liste_tournois.append(infos_tournoi)
         return liste_tournois
 
+    def recuperer_joueur_par_id(self, liste_matchs):
+        liste_joueurs = []
+        for row in liste_matchs["Matchs"]:
+            joueur_id = row[0]
+            if row[1] == 0:
+                resultat = "Perdu"
+            elif row[1] == 1:
+                resultat = "Gagné"
+            elif row[1] == 0.5:
+                resultat = "Match nul"
+            for element in self.table_joueur:
+                if joueur_id == element["id"][0]:
+                    joueur = element["nom"], element["prenom"], resultat
+                    liste_joueurs.append(joueur)
+        return liste_joueurs
+
     def recuperer_rounds_tournoi(self, nom_tournoi, lieu_tournoi):
         table_tournoi = self.table_tournoi.search(self.user.nom_du_tournoi == nom_tournoi and self.user.
                                                   lieu == lieu_tournoi)
-        for row in table_tournoi:
-            rounds = row["rounds"]
-        return rounds
+        for rounds in table_tournoi:
+            liste_rounds = []
+            for round in rounds["rounds"]:
+                liste_matchs = []
+                info_round = round["nom_round"], round["date_debut_round"], round["date_fin_round"]
+                liste_rounds.append(info_round)
+                for row in round["matchs_round"]:
+                    match = self.recuperer_joueur_par_id(row)
+                    liste_matchs.append(match)
+                liste_rounds.extend(liste_matchs)
+        return liste_rounds
 
     def recuperer_matchs_tournoi(self, nom_tournoi, lieu_tournoi):
         table_tournoi = self.table_tournoi.search(self.user.nom_du_tournoi == nom_tournoi and self.user.
                                                   lieu == lieu_tournoi)
         liste_matchs = []
-        for row in table_tournoi:
-            for match in row["rounds"]:
-                matchs = match["matchs_round"]
-                liste_matchs.extend(matchs)
+        for rounds in table_tournoi:
+            for round in rounds["rounds"]:
+                for row in round["matchs_round"]:
+                    match = self.recuperer_joueur_par_id(row)
+                    liste_matchs.append(match)
         return liste_matchs
 
     def classer_par_ordre_alphabetique(self, liste_joueurs, item: int = 0):

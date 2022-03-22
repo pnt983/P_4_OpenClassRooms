@@ -54,7 +54,6 @@ class ControllerJoueur:
         """ Recupere le joueur dans la base de donnees par son 'id' """
         id = self.table.get(doc_id=choix)
         if id != []:
-            VueJoueur.afficher_message(id)
             return id
         else:
             VueJoueur.afficher_message_erreur()
