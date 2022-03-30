@@ -56,34 +56,57 @@ class ControleurTournoi:
             recup_infos = Tournoi.recuperer_infos_tournoi(self.table_tournoi, self.user, nom_tournoi, lieu_tournoi)
             return recup_infos
 
+    def continuer_ou_arreter_tournoi(self, commencer_ou_finir):
+        if commencer_ou_finir == "commencer":
+            choix_utilisateur = VueTournoi.valider_debut_round()
+            return choix_utilisateur
+        elif commencer_ou_finir == "finir":
+            choix = VueTournoi.valider_fin_round()
+            return choix
+
     def commencer_tournoi(self):
         """ Début du tournoi dans le menu principal"""
-        tournoi = self.creer_tournoi()
-        liste_joueurs = self.controller_joueur.ajouter_joueur(tournoi.nombre_joueur)
-        tournoi.enregistrer_joueur(liste_joueurs)
-        tournoi.sauvegarder_tournoi()
-        input("Appuyer sur 'Entrer' pour commencer le round")
-        round_1 = self.controller_round.creer_premier_round(tournoi.joueurs)
-        tournoi.enregistrer_round(round_1)
-        tournoi.sauvegarder_tournoi()
-        VueTournoi.valider_fin_round()
-        round_1.ajouter_date_fin_round()
-        tournoi.sauvegarder_tournoi()
-        self.controller_round.entrer_resultat_matchs(round_1.matchs)
-        round_1.cloturer_round()
-        tournoi.sauvegarder_tournoi()
-        for i in range(int(tournoi.nb_tour) - 1):
-            round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
-            tournoi.enregistrer_round(round_suivant)
+        interrupteur = ""
+        while True:
+            tournoi = self.creer_tournoi()
+            liste_joueurs = self.controller_joueur.ajouter_joueur(tournoi.nombre_joueur)
+            tournoi.enregistrer_joueur(liste_joueurs)
             tournoi.sauvegarder_tournoi()
-            VueTournoi.valider_fin_round()
-            round_suivant.ajouter_date_fin_round()
+            interrupteur = self.continuer_ou_arreter_tournoi("commencer")
+            if interrupteur == "Q":
+                break
+            round_1 = self.controller_round.creer_premier_round(tournoi.joueurs)
+            tournoi.enregistrer_round(round_1)
             tournoi.sauvegarder_tournoi()
-            self.controller_round.entrer_resultat_matchs(round_suivant.matchs)
-            round_suivant.cloturer_round()
-            i += 1
-        tournoi.sauvegarder_tournoi()
-        tournoi.cloturer_tournoi()
+            interrupteur = self.continuer_ou_arreter_tournoi("finir")
+            if interrupteur == "Q":
+                break
+            round_1.ajouter_date_fin_round()
+            tournoi.sauvegarder_tournoi()
+            self.controller_round.entrer_resultat_matchs(round_1.matchs)
+            round_1.cloturer_round()
+            tournoi.sauvegarder_tournoi()
+            interrupteur = self.continuer_ou_arreter_tournoi("commencer")
+            if interrupteur == "Q":
+                break
+            for i in range(int(tournoi.nb_tour) - 1):
+                round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
+                tournoi.enregistrer_round(round_suivant)
+                tournoi.sauvegarder_tournoi()
+                interrupteur = self.continuer_ou_arreter_tournoi("finir")
+                if interrupteur == "Q":
+                    break
+                round_suivant.ajouter_date_fin_round()
+                tournoi.sauvegarder_tournoi()
+                self.controller_round.entrer_resultat_matchs(round_suivant.matchs)
+                round_suivant.cloturer_round()
+                i += 1
+            if interrupteur == "Q":
+                break
+            tournoi.sauvegarder_tournoi()
+            classement = tournoi.cloturer_tournoi()
+            VueTournoi.afficher_classement_final(classement)
+            break
 
     def reprise_tournoi(self):
         """Reprend un tournoi enregistré dans le menu principal"""

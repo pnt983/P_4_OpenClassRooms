@@ -66,7 +66,7 @@ class Rapport:
             elif row[1] == 1:
                 resultat = "Gagné"
             elif row[1] == 0.5:
-                resultat = "Match nul"
+                resultat = "Egalité"
             for element in self.table_joueur:
                 if joueur_id == element["id"][0]:
                     joueur = element["nom"], element["prenom"], resultat

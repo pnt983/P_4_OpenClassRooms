@@ -1,4 +1,4 @@
-
+from colorama import Fore
 
 from models.joueur import Joueur
 
@@ -41,7 +41,7 @@ class Match:
         self.joueur_score_2 = joueur_score_2
 
     def __repr__(self):
-        match = f"{self.joueur_score_1} joue contre {self.joueur_score_2}"
+        match = Fore.LIGHTCYAN_EX + f"{self.joueur_score_1} joue contre {self.joueur_score_2}" + Fore.RESET
         return match
 
     def obtenir_resultat(self):
@@ -76,5 +76,3 @@ class Match:
         joueur_2 = self.joueur_score_2.joueur
         joueur_1.adversaire_deja_rencontrer.append(joueur_2)
         joueur_2.adversaire_deja_rencontrer.append(joueur_1)
-        print(id(joueur_1))
-        print(id(joueur_2))

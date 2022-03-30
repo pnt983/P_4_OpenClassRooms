@@ -18,11 +18,11 @@ class ControllerRapport:
         choix_utilisateur = VueRapport.choisir_alphabetique_ou_classement()
         if choix_utilisateur == 1:
             liste_ordre_alphabetique = self.rapport.classer_par_ordre_alphabetique(table_joueurs)
-            VueRapport.montrer_message(liste_ordre_alphabetique)
+            VueRapport.montrer_acteurs(liste_ordre_alphabetique)
             return liste_ordre_alphabetique
         elif choix_utilisateur == 2:
             liste_classement = self.rapport.classer_par_classement(table_joueurs)
-            VueRapport.montrer_message(liste_classement)
+            VueRapport.montrer_acteurs(liste_classement)
             return liste_classement
         else:
             VueRapport.afficher_message_erreur()
@@ -34,7 +34,7 @@ class ControllerRapport:
         if not table_tournoi:
             print("\nIl n'y a pas encore de tournois dans les rapports")
         else:
-            VueRapport.montrer_message(table_tournoi)
+            VueRapport.montrer_table_tournoi(table_tournoi)
             nom_tournoi = VueRapport.entrer_nom_tournoi()
             lieu_tournoi = VueRapport.entrer_lieu_tournoi()
 
@@ -42,11 +42,11 @@ class ControllerRapport:
             choix_utilisateur = VueRapport.choisir_alphabetique_ou_classement()
             if choix_utilisateur == 1:
                 liste_ordre_alphabetique = self.rapport.classer_par_ordre_alphabetique(liste_joueurs)
-                VueRapport.montrer_message(liste_ordre_alphabetique)
+                VueRapport.montrer_joueurs_tournoi(liste_ordre_alphabetique)
                 return liste_ordre_alphabetique
             elif choix_utilisateur == 2:
                 liste_classement = self.rapport.classer_par_classement(liste_joueurs)
-                VueRapport.montrer_message(liste_classement)
+                VueRapport.montrer_joueurs_tournoi(liste_classement)
                 return liste_classement
             else:
                 VueRapport.afficher_message_erreur()
@@ -57,7 +57,7 @@ class ControllerRapport:
         if not table_tournoi:
             print("\nIl n'y a pas encore de tournois dans les rapports")
         else:
-            VueRapport.montrer_message(table_tournoi)
+            VueRapport.montrer_tournois(table_tournoi)
 
     def afficher_tous_tours_tournoi(self):
         self.rapport = Rapport(self.table_joueur, self.table_tournoi, self.query)
@@ -65,11 +65,11 @@ class ControllerRapport:
         if not table_tournoi:
             print("\nIl n'y a pas encore de tours dans les rapports")
         else:
-            VueRapport.montrer_message(table_tournoi)
+            VueRapport.montrer_table_tournoi(table_tournoi)
             nom_tournoi = VueRapport.entrer_nom_tournoi()
             lieu_tournoi = VueRapport.entrer_lieu_tournoi()
             table_rounds = self.rapport.recuperer_rounds_tournoi(nom_tournoi, lieu_tournoi)
-            VueRapport.montrer_message(table_rounds)
+            VueRapport.montrer_rapport_tour(table_rounds)
 
     def afficher_tous_matchs_tournois(self):
         self.rapport = Rapport(self.table_joueur, self.table_tournoi, self.query)
@@ -77,11 +77,11 @@ class ControllerRapport:
         if not table_tournoi:
             print("\nIl n'y a pas encore de match dans les rapports")
         else:
-            VueRapport.montrer_message(table_tournoi)
+            VueRapport.montrer_table_tournoi(table_tournoi)
             nom_tournoi = VueRapport.entrer_nom_tournoi()
             lieu_tournoi = VueRapport.entrer_lieu_tournoi()
             recuperer_matchs = self.rapport.recuperer_matchs_tournoi(nom_tournoi, lieu_tournoi)
-            VueRapport.montrer_message(recuperer_matchs)
+            VueRapport.montrer_rapport_match(recuperer_matchs)
 
     def gerer_rapports(self):
         """ Gére la gestion des rapports dans le menu principal"""

@@ -23,7 +23,7 @@ class Menu:
             print(Fore.BLUE + f"\n*************** {self.titre} ***************\n")
             for option in self.options:
                 print(Fore.GREEN + option + "\n")
-            choix_utilisateur = input(Fore.RED + "Entrer le numero de votre choix: ")
+            choix_utilisateur = input(Fore.MAGENTA + "Entrer le numero de votre choix: " + Fore.RESET)
             try:
                 if int(choix_utilisateur) > 0 and int(choix_utilisateur) <= len(self.options):
                     return choix_utilisateur

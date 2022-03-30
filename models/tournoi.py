@@ -93,12 +93,20 @@ class Tournoi():
                 liste_rounds.append(round)
         return tournoi
 
+    # def creer_classement_final(self):
+    #     for row in self.joueurs:
+    #         liste_par_score = sorted(row, key=lambda joueur: joueur.score, reverse=True)
+    #         return liste_par_score
+
     def cloturer_tournoi(self):
         table_tournoi = self.table_tournoi.search(self.user.nom_du_tournoi == self.nom and self.user.lieu == self.lieu)
         for row in table_tournoi:
             row["etat_tournoi"]
             self.table_tournoi.update({"etat_tournoi": "Fini"}, self.user.nom_du_tournoi == self.nom and self.user.
                                       lieu == self.lieu)
+        for row in self.joueurs:
+            liste_par_score = sorted(row, key=lambda joueur: joueur.score, reverse=True)
+            return liste_par_score
 
     def sauvegarder_apres_reprise(self):
         liste_joueurs_serialise = []

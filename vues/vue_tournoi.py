@@ -8,7 +8,7 @@ class VueTournoi:
     @classmethod
     @Verification.verifier_input_remplit
     def creer_nom_tournoi(cls):
-        return input("Entrer le nom de votre tournoi: ").capitalize()
+        return input("\n" + "Entrer le nom de votre tournoi: ").capitalize()
 
     @classmethod
     @Verification.verifier_input_remplit
@@ -51,8 +51,23 @@ directement sur entrée: ")
         print(message)
 
     @classmethod
+    def afficher_classement_final(cls, classement):
+        print("\n", "Voici le classement final: ")
+        for row in classement:
+            print("\n", classement.index(row) + 1, row.nom, row.prenom, row.date_de_naissance,
+                  row.classement_joueur)
+
+    @classmethod
+    @Verification.verifier_sortir_tournoi
+    def valider_debut_round(cls):
+        return input("\n" + "Appuyer sur 'Entrer' pour commencer le round ou appuyer sur 'Q' pour quitter \
+le tournoi: ").capitalize()
+
+    @classmethod
+    @Verification.verifier_sortir_tournoi
     def valider_fin_round(cls):
-        return input("Appuyer sur 'Entrer' pour finir le round")
+        return input("\n" + "Appuyer sur 'Entrer' pour finir le round ou appuyer sur 'Q' pour quitter \
+le tournoi: ").capitalize()
 
 
 def main():

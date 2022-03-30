@@ -1,4 +1,5 @@
 from . import database
+from colorama import Fore
 
 
 class Verification:
@@ -217,3 +218,24 @@ class Verification:
                 except ValueError:
                     print("Uniquement les chiffres sont acceptés")
         return wrapper
+
+    def verifier_sortir_tournoi(fonction):
+        def wrapper(*args, **kwargs):
+            choix_utilisateur = fonction(*args, **kwargs)
+            if str(choix_utilisateur) != "Q":
+                return ""
+            else:
+                return "Q"
+        return wrapper
+
+    @classmethod
+    def verifier_gagnant(cls, match) -> str:
+        for row in match:
+            if row[2] == "Gagné":
+                message = print("Le vainqueur du match est:", Fore.GREEN + row[0], Fore.GREEN + row[1])
+                return message
+            elif row[2] == "Perdu":
+                pass
+            else:
+                message = print(Fore.YELLOW + "Le match a fini sur une égalité")
+                return message

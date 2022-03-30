@@ -54,7 +54,7 @@ class VueJoueur:
 
     @classmethod
     def choisir_ajouter_joueur(cls):
-        return int(input("Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
+        return int(input("\n" + "Entrer 1 pour creer un joueur ou 2 pour choisir dans la base de donnees: "))
 
     @classmethod
     @Verification.verifier_doc_id

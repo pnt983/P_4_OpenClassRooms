@@ -33,6 +33,8 @@ class ControllerJoueur:
                     if choix_utilisateur in choix:
                         if choix_utilisateur == 1:
                             joueur = self.creer_joueur()
+                            for id in joueur.id:
+                                joueur.id = id
                             liste_joueurs.append(joueur)
                             i += 1
                         elif choix_utilisateur == 2:
