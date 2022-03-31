@@ -139,11 +139,12 @@ class ControleurTournoi:
                     round_suivant.cloturer_round()
                     i += 1
                 tournoi.sauvegarder_apres_reprise()
-                tournoi.cloturer_tournoi()
+                classement = tournoi.cloturer_tournoi()
+                VueTournoi.afficher_classement_final(classement)
             else:
                 round = liste_rounds[-1]
                 print(f"Vous reprenez le tournoi {tournoi.nom}-{tournoi.lieu}. Le tour précédent etait \
-    le tour n°{len(liste_rounds)}")
+le tour n°{len(liste_rounds)}")
                 tournoi.joueurs = [tournoi.joueurs]
                 for i in range(int(tournoi.nb_tour) - len(liste_rounds)):
                     round_suivant = self.controller_round.creer_les_rounds_suivant(tournoi.joueurs)
@@ -154,7 +155,8 @@ class ControleurTournoi:
                     round_suivant.cloturer_round()
                     i += 1
                 tournoi.sauvegarder_apres_reprise()
-                tournoi.cloturer_tournoi()
+                classement = tournoi.cloturer_tournoi()
+                VueTournoi.afficher_classement_final(classement)
 
 
 def main():
